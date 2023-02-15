@@ -2,27 +2,47 @@
 <template>
 <section class="content bg">
     <div class="mx-5 rounded h-100 d-flex align-items-center justify-content-center">
-      <div class="mt-3 container-fluid px-5 card">
-          <div class="card-body">
+      <div class="mt-3 container-fluid card">
+          <div class="mx-2 card-body">
               <h1 class="mt-4 mb-4">ข้อมูลยา</h1>
               <div class="mb-4">
                   <div>
+					<router-link :to="`addmedicine`">
 						<div class="d-flex justify-content-end">
-							<button class="mb-4 btn bg-primary"><a href="addmedicine.html" style="text-decoration: none" class="text-white"><i class='bx bx-plus-medical'></i> เพิ่มยา</a></button>
+							<button class="mb-4 btn bg-primary text-white"><i class='bx bx-plus-medical'></i> เพิ่มยา</button>
 						</div>
-						<DataTable :data="data" class="display">
-    					    <thead>
-    					        <tr>
-    					            <th style="width: 5%;">รหัส</th>
-                    	              <th style="width: 10%;">ชื่อยา</th>
-                    	              <th style="width: 20%;">รูปยา</th>
-                    	              <th style="width: 20%;">รายละเอียด</th>
-                    	              <th style="width: 20%;">วิธีการใช้ยา</th>
-                    	              <th style="width: 13%;">
-									  </th>
-    					        </tr>
-    					    </thead>
-    					</DataTable>
+					</router-link>
+					<table class=" table table-bordered display justify-content-center" id="medicineTable">
+						<thead class="bg-primary">
+							<tr>
+								<th class="text-white" >รหัส</th>
+								<th class="text-white" >ชื่อยา</th>
+								<th class="text-white" >รูปยา</th>
+								<th class="text-white" >รายละเอียด</th>
+								<th class="text-white" >วิธีการใช้ยา</th>
+								<th class="text-white" ></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for=" medicine in  this.medicines" :key="medicine.medID">
+								<td style="width: 5%;">{{medicine.medID}}</td>
+								<td style="width: 5%;">{{medicine.name}}</td>
+								<td style="width: 20%;"><img v-bind:src="medicine.imageURL" width="250px" alt=""></td>
+								<td style="width: 20%;">{{medicine.data}}</td>
+								<td style="width: 20%;">{{medicine.option}}</td>
+								<td >
+									<router-link :to="`/medicine/${medicine.id}`">
+										<button class="btn btn-success btn-sm ">
+											แก้ไข
+										</button>
+									</router-link>
+									<button class="btn btn-danger btn-sm ms-5" @click="deleteMedicine(medicine.id)">
+										ลบ
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
                   </div>
               </div>
           </div>
@@ -32,36 +52,34 @@
 </template>
 
 <script>
-
-
-// // Your web app's Firebase configuration
-// // eslint-disable-next-line no-unused-vars
-// const firebaseConfig = {
-//   apiKey: "AIzaSyD3cuKqdUz7--QTLZ7gZNOrAvRi0dxyhDc",
-//   authDomain: "dyeac-dev.firebaseapp.com",
-//   projectId: "dyeac-dev",
-//   storageBucket: "dyeac-dev.appspot.com",
-//   messagingSenderId: "675710346530",
-//   appId: "1:675710346530:web:ddf3b0114948ae5668f17b"
-// };
-
-// // Initialize Firebase
-// // const app = initializeApp(firebaseConfig);
-
-
+import LTable from 'src/components/Table.vue'
+import Card from 'src/components/Cards/Card.vue'
+import Table from '../components/Table.vue'
+import $ from 'jquery' ;
+import { getMedicines } from '../firebase.js'
 export default {
-	name: 'App',
-    components: {
-	},
-    data() {
-      return {}
+	components: {
+		LTable,
+      	Card,
     },
-	methods() {
-		
-	},	
-	mounted (){
+	async mounted() {
+		await getMedicines(this.medicines)
+		this.setTable()
 	},
-}
+	methods: {
+		setTable(){ 
+			$('#medicineTable').DataTable({})
+		},
+		// deleteMedicine(id){
+		// 	alert(id)
+		// },
+	},
+	data () {
+		return {
+			medicines: []
+		}
+	  }
+	}
 
 </script>
 

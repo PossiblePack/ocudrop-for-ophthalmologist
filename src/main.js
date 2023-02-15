@@ -24,6 +24,14 @@ import LightBootstrap from "./light-bootstrap-main";
 // router setup
 import routes from "./routes/routes";
 
+//DataTable
+import "bootstrap/dist/css/bootstrap.min.css"
+import "datatables.net-bs5"
+import "datatables.net-bs5/css/dataTables.bootstrap5.min.css"
+import "jszip"
+import "pdfmake"
+import "datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css"
+
 import "./registerServiceWorker";
 // plugin setup
 Vue.use(VueRouter);

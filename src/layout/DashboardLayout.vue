@@ -4,19 +4,19 @@
       <mobile-menu slot="content"></mobile-menu>
       <sidebar-link to="/admin/overview">
         <i class="nc-icon nc-chart-pie-35"></i>
-        <p>Dashboard</p>
+        <p>แดชบอร์ด</p>
+      </sidebar-link>
+      <sidebar-link to="/admin/medicine">
+        <i class="nc-icon nc-single-02"></i>
+        <p>ข้อมูลยา</p>
+      </sidebar-link>
+      <sidebar-link to="/admin/registerpatient">
+        <i class="nc-icon nc-single-02"></i>
+        <p>ลงทะเบียนผู้ป่วยใหม่</p>
       </sidebar-link>
       <sidebar-link to="/admin/user">
         <i class="nc-icon nc-circle-09"></i>
         <p>User Profile</p>
-      </sidebar-link>
-      <sidebar-link to="/admin/table-list">
-        <i class="nc-icon nc-notes"></i>
-        <p>Table list</p>
-      </sidebar-link>
-      <sidebar-link to="/admin/typography">
-        <i class="nc-icon nc-paper-2"></i>
-        <p>Typography</p>
       </sidebar-link>
       <sidebar-link to="/admin/icons">
         <i class="nc-icon nc-atom"></i>
@@ -30,14 +30,7 @@
         <i class="nc-icon nc-bell-55"></i>
         <p>Notifications</p>
       </sidebar-link>
-      <sidebar-link to="/admin/medicine">
-        <i class="nc-icon nc-single-02"></i>
-        <p>ข้อมูลยา</p>
-      </sidebar-link>
-      <sidebar-link to="/admin/registerpatient">
-        <i class="nc-icon nc-single-02"></i>
-        <p>ลงทะเบียนผู้ป่วยใหม่</p>
-      </sidebar-link>
+      
       <!-- <template slot="bottom-links">
         <sidebar-link class="active"
                       to="/admin/upgrade">

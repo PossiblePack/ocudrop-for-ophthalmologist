@@ -7,8 +7,7 @@ import Overview from 'src/pages/Overview.vue'
 import Medicine from "src/pages/Medicine.vue";
 import RegisterPatient from "src/pages/Registerpatient.vue";
 import UserProfile from 'src/pages/UserProfile.vue'
-import TableList from 'src/pages/TableList.vue'
-import Typography from 'src/pages/Typography.vue'
+import AddMedicine from 'src/pages/AddMedicine.vue'
 import Icons from 'src/pages/Icons.vue'
 import Maps from 'src/pages/Maps.vue'
 import Notifications from 'src/pages/Notifications.vue'
@@ -28,23 +27,33 @@ const routes = [
     children: [
       {
         path: 'overview',
-        name: 'Overview',
+        name: 'dashboard',
         component: Overview
       },
+      {
+        path: 'medicine', 
+        name: 'Medicine', 
+        component: Medicine 
+      },
+      {
+        path: 'addmedicine', 
+        name: 'AddMedicine', 
+        component: AddMedicine 
+      },
+      {
+        path: '/medicine/:id', 
+        name: 'editMedicine', 
+        component: Medicine 
+      }, 
+      {
+        path: 'registerpatient', 
+        name: 'RegisterPatient', 
+        component: RegisterPatient 
+      }, 
       {
         path: 'user',
         name: 'User',
         component: UserProfile
-      },
-      {
-        path: 'table-list',
-        name: 'Table List',
-        component: TableList
-      },
-      {
-        path: 'typography',
-        name: 'Typography',
-        component: Typography
       },
       {
         path: 'icons',
@@ -66,16 +75,7 @@ const routes = [
         name: 'Upgrade to PRO',
         component: Upgrade
       },
-      {
-        path: 'medicine', 
-        name: 'Medicine', 
-        component: Medicine 
-      }, 
-      {
-        path: 'registerpatient', 
-        name: 'RegisterPatient', 
-        component: RegisterPatient 
-      }, 
+      
     ]
   },
   { path: '*', component: NotFound }
