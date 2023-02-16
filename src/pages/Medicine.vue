@@ -4,7 +4,7 @@
     <div class="mx-5 rounded h-100 d-flex align-items-center justify-content-center">
       <div class="mt-3 container-fluid card">
           <div class="mx-2 card-body">
-              <h1 class="mt-4 mb-4">ข้อมูลยา</h1>
+				<h2 class="mt-5 mb-4 d-flex justify-content-center">ข้อมูลยา</h2>
               <div class="mb-4">
                   <div>
 					<router-link :to="`addmedicine`">
@@ -56,8 +56,11 @@ import LTable from 'src/components/Table.vue'
 import Card from 'src/components/Cards/Card.vue'
 import Table from '../components/Table.vue'
 import $ from 'jquery' ;
-import { getMedicines } from '../firebase.js'
+import { getMedicines, deleteMedicine } from '../firebase.js'
 export default {
+	setup() {
+		return { deleteMedicine }
+	},
 	components: {
 		LTable,
       	Card,

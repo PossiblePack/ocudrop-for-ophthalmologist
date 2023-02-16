@@ -28,7 +28,7 @@
                                             <div class="d-flex justify-content-end ">
                                                 <button @click="addOption()" style="width: 50px;" class="btn-primary justify-content-end">+</button>
                                             </div>
-                                            <div class="pb-3 ps-3" id="option2">
+                                            <div class="pb-3 ps-3 group" id="option2">
                                                 <label class="text-start text-label">วันละ</label>
                                                 <input type="number" name="" id="times" class="col-sm-2">
                                                 <label for="" class="col-sm-2 text-label">ครั้ง</label>
@@ -48,12 +48,14 @@
                                 <div class="mb-4">
                                     <label class="form-label">อัพโหลดรูปยา</label>
                                     <div class="row">
-                                        <input class="col-6 " type="file" name="selectImage" id="selectImage" >
-                                        <!-- <button type="button" class="col-6 btn btn-success" id="check">อัพโหลดรูปยา</button> -->
+                                        <input class="col-6 " type="file" name="selectImage" id="selectImage" @change="showPhoto($event)" >
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" class="text-center btn-success w-25" name="submitData" id="submitData">บันทึกข้อมูล</button>
+                            <div class="d-flex justify-content-center">
+                                <button type="button" class="text-center btn btn-success w-25 " @click="CreateNewMedicine()">บันทึกข้อมูล</button>
+                            </div>
+                            
                         </div>
                         </form>
                     </div> 
@@ -64,10 +66,11 @@
 
 
 <script>
-var checkboxes = document.querySelectorAll('.checkbox');
-
-
+import { addNewMedicineData, getLatestMedicineID, uploadProcess } from '../firebase.js'
 export default {
+    async mounted() {
+        this.latestID = await getLatestMedicineID();
+    },
     methods: {
         addOption(){
             // alert("add")
@@ -180,11 +183,50 @@ export default {
             document.getElementById('sel-morning').checked=false
             times.value = ""
             period.value = ""
-        }
+        },
+        showPhoto(event){
+            // var extention, fileName
+            var reader = new FileReader();
+            this.files = event.target.files;
+
+            let ext = this.GetExtName(this.files[0]);
+            let name = this.GetName(this.files[0]);
+
+            this.extention = ext
+            this.fileName = name
+
+            reader.readAsDataURL(this.files[0]);
+            reader.onload = function(){
+                document.getElementById('img').src = reader.result;
+            }
+        },
+        GetExtName(file) {
+            let temp = file.name.split(".");
+            let ext = temp.slice((temp.length-1),(temp.length));
+            return '.' + ext[0];
+        },
+        GetName(file){
+            let temp = file.name.split('.');
+            let name = temp.slice(0,-1).join('.');
+            return name;
+        },
+        async CreateNewMedicine(){
+            this.medicineName = document.getElementById("medicineName").value;
+            this.data = document.getElementById("data").value;
+            // alert('create')
+            // console.log(document.getElementById('selectImage').value == '');
+            uploadProcess(this.files, this.fileName, this.extention, this.medicineName, this.data, this.listStringOption, this.latestID);
+        },
     },
     data () {
         return {
             listStringOption : [],
+            files : [],
+            extention: "", 
+            fileName: "",
+            medicineName: "",
+            data:"",
+            latestID: 0,
         }
     }
 }
@@ -192,6 +234,7 @@ export default {
 
 <style>
 .text-label{
+    font-size: 10px;
     color: black,
 }
 </style>
