@@ -31,11 +31,9 @@
 								<td style="width: 20%;">{{medicine.data}}</td>
 								<td style="width: 20%;">{{medicine.option}}</td>
 								<td >
-									<router-link :to="`/medicine/${medicine.id}`">
-										<button class="btn btn-success btn-sm ">
-											แก้ไข
-										</button>
-									</router-link>
+									<button class="btn btn-success btn-sm " @click="editMedicine(medicine.id,medicine.medID,medicine.name,medicine.imageURL,medicine.data,medicine.option)">
+										แก้ไข
+									</button>
 									<button class="btn btn-danger btn-sm ms-5" @click="deleteMedicine(medicine.id)">
 										ลบ
 									</button>
@@ -54,10 +52,10 @@
 <script>
 import LTable from 'src/components/Table.vue'
 import Card from 'src/components/Cards/Card.vue'
-import Table from '../components/Table.vue'
 import $ from 'jquery' ;
 import { getMedicines, deleteMedicine } from '../firebase.js'
 export default {
+	name: 'Medicine',
 	setup() {
 		return { deleteMedicine }
 	},
@@ -73,9 +71,18 @@ export default {
 		setTable(){ 
 			$('#medicineTable').DataTable({})
 		},
-		// deleteMedicine(id){
-		// 	alert(id)
-		// },
+		editMedicine(id,medID,name,imageURL,data,option){
+			var medicine = []
+			medicine.push({
+				medID: medID,
+				imageURL: imageURL,
+				name: name,
+				data: data,
+				option: option,
+				id: id,
+			});
+			this.$router.push({ name: 'editMedicine', params: {data: medicine , id:id}})
+		},
 	},
 	data () {
 		return {

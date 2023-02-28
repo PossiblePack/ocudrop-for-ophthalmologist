@@ -4,8 +4,7 @@ import { firebase, initializeApp, applicationDefault, cert } from 'firebase/app'
 import { addDoc, collection, getDocs, getFirestore, deleteDoc, doc } from "firebase/firestore";
 import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL} from "firebase/storage"
 
-// Your web app's Firebase configuration
-// eslint-disable-next-line no-unused-vars
+// Dyeac-Dev
 const firebaseConfig = {
   apiKey: "AIzaSyD3cuKqdUz7--QTLZ7gZNOrAvRi0dxyhDc",
   authDomain: "dyeac-dev.firebaseapp.com",
@@ -14,6 +13,18 @@ const firebaseConfig = {
   messagingSenderId: "675710346530",
   appId: "1:675710346530:web:ddf3b0114948ae5668f17b"
 };
+
+// // Dyeac
+// const firebaseConfig = {
+//   apiKey: "AIzaSyAoZzqNTkmRw3ycCZlWRODV3pvpeF_Z-eg",
+//   authDomain: "dyeac-8fc86.firebaseapp.com",
+//   databaseURL: "https://dyeac-8fc86-default-rtdb.firebaseio.com",
+//   projectId: "dyeac-8fc86",
+//   storageBucket: "dyeac-8fc86.appspot.com",
+//   messagingSenderId: "255357549075",
+//   appId: "1:255357549075:web:826dfcba6022e3cdfe1de6",
+//   measurementId: "G-G0XDWNWV6X"
+// };
   
   // Initialize Firebase
 const app = initializeApp(firebaseConfig);
