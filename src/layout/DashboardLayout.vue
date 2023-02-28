@@ -10,6 +10,10 @@
         <i class="nc-icon nc-single-02"></i>
         <p>ข้อมูลยา</p>
       </sidebar-link>
+      <sidebar-link to="/admin/patient">
+        <i class="nc-icon nc-single-02"></i>
+        <p>ข้อมูลผู้ป่วย</p>
+      </sidebar-link>
       <sidebar-link to="/admin/registerpatient">
         <i class="nc-icon nc-single-02"></i>
         <p>ลงทะเบียนผู้ป่วยใหม่</p>

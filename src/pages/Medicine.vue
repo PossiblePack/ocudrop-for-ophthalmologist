@@ -71,16 +71,25 @@ export default {
 		setTable(){ 
 			$('#medicineTable').DataTable({})
 		},
+		// setMedicineOption(){
+		// 	var optionString = ""
+		// 	if(this.medicines.option>1){
+		// 	  for(var i = 0; i< medOption.length; i++){
+		// 	    optionString += i+1+". " + this.medicines.option[i] + "\n"
+		// 	  }
+		// 	}else{
+		// 		optionString = medOption.toString()
+		// 	}
+		// },
 		editMedicine(id,medID,name,imageURL,data,option){
-			var medicine = []
-			medicine.push({
+			var medicine = {
 				medID: medID,
 				imageURL: imageURL,
 				name: name,
 				data: data,
 				option: option,
 				id: id,
-			});
+			};
 			this.$router.push({ name: 'editMedicine', params: {data: medicine , id:id}})
 		},
 	},

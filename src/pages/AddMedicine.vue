@@ -71,6 +71,7 @@ export default {
     name: 'AddMedicine',
     async mounted() {
         this.latestID = await getLatestMedicineID();
+        this.imgUrl = "";
     },
     methods: {
         addOption(){
@@ -219,7 +220,7 @@ export default {
                 var url = 'https://firebasestorage.googleapis.com/v0/b/dyeac-8fc86.appspot.com/o/medicineIMG%2Fno_image.png?alt=media&token=dc6fcead-7734-4c27-aac8-7b7e312db70e';
                 addNewMedicineData(this.medicineName, this.data , url, this.listStringOption, this.latestID);
             }else{
-                uploadProcess(this.files, this.fileName, this.extention, this.medicineName, this.data, this.listStringOption, this.latestID);
+                uploadProcess(this.files, this.fileName, this.extention, this.medicineName, this.data , this.listStringOption, this.latestID, "");
             }
         },
     },
@@ -232,6 +233,7 @@ export default {
             medicineName: "",
             data:"",
             latestID: 0,
+            imgUrl: ""
         }
     }
 }

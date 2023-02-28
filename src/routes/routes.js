@@ -5,10 +5,12 @@ import NotFound from '../pages/NotFoundPage.vue'
 // Admin pages
 import Overview from 'src/pages/Overview.vue'
 import Medicine from "src/pages/Medicine.vue";
+import Patient from "src/pages/Patient.vue";
 import RegisterPatient from "src/pages/Registerpatient.vue";
 import UserProfile from 'src/pages/UserProfile.vue'
 import AddMedicine from 'src/pages/AddMedicine.vue'
 import EditMedicine from 'src/pages/EditMedicine.vue'
+import patientDetail from 'src/pages/patientDetail.vue'
 import Icons from 'src/pages/Icons.vue'
 import Maps from 'src/pages/Maps.vue'
 import Notifications from 'src/pages/Notifications.vue'
@@ -45,6 +47,16 @@ const routes = [
         path: '/medicine/:id', 
         name: 'editMedicine', 
         component: EditMedicine 
+      }, 
+      {
+        path: '/patient/:id', 
+        name: 'patientDetail', 
+        component: patientDetail 
+      }, 
+      {
+        path: 'patient', 
+        name: 'Patient', 
+        component: Patient 
       }, 
       {
         path: 'registerpatient', 

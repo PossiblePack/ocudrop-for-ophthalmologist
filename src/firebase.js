@@ -1,7 +1,7 @@
 import { onUnmounted, ref } from 'vue';
 
 import { firebase, initializeApp, applicationDefault, cert } from 'firebase/app';
-import { addDoc, collection, getDocs, getFirestore, deleteDoc, doc } from "firebase/firestore";
+import { updateDoc, addDoc, collection, getDocs, getFirestore, deleteDoc, doc } from "firebase/firestore";
 import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL} from "firebase/storage"
 
 // Dyeac-Dev
@@ -40,24 +40,51 @@ export async function getMedicines(medicines) {
         var medData = doc.data().data;
         var medOption = doc.data().useOption;
         var docID = doc.id;
-        var optionString = ""
-        if(medOption.length>1){
-          for(var i = 0; i< medOption.length; i++){
-            optionString += i+1+". " + medOption[i] + "\n"
-          }
-        }else{
-          var optionString = medOption.toString()
-        }
         medicines.push({
           medID: medID,
           imageURL: medImgURL,
           name: medName,
           data: medData,
-          option: optionString,
+          option: medOption,
           id: docID,
         });
     });
     return medicines
+}
+
+export async function getPatient(patient) {
+  const querySnapshot = await getDocs(collection(db, "user-1"));
+  querySnapshot.forEach((doc) => {
+    var docID = doc.data().uid;
+    var createTime = doc.data().createTime;
+    var name = doc.data().name;
+    var surname = doc.data().surname;
+    var email = doc.data().email; 
+    var phoneNo = doc.data().phone;
+    var lastModifyTime = doc.data().lastModified;
+    var doctorName = doc.data().doctorname; 
+    var history = doc.data().history;    
+    var password = doc.data().password;
+
+    var dateTime = new Date(createTime.seconds * 1000);
+    var createDate = dateTime.getDate()+ "/"+(dateTime.getMonth()+1)+ "/"+dateTime.getFullYear();
+    if(createDate == "NaN/NaN/NaN"){
+      createDate = "";
+    };
+    patient.push({
+      createTime: createDate,
+      name: name,
+      surname: surname,
+      email: email,
+      phoneNo: phoneNo,
+      lastModifyTime: lastModifyTime,
+      doctorName: doctorName,
+      history: history,
+      docID: docID,
+      password: password,
+    });
+  });
+  return patient
 }
 
 export async function getLatestMedicineID(){
@@ -74,7 +101,7 @@ export async function getLatestMedicineID(){
   return MaxID
 }
 
-export async function uploadProcess(files, fileName, extention, medicineName, data, listStringOption, latestID){
+export async function uploadProcess(files, fileName, extention, medicineName, data , listStringOption, latestID, id){
   let image = files[0];
   let imageName = fileName + extention;
 
@@ -87,17 +114,25 @@ export async function uploadProcess(files, fileName, extention, medicineName, da
   const uploadTask = uploadBytesResumable(storageRef, image, metaData);
 
   uploadTask.on('state-change', (snapshot) => {
-      var progress = (snapshot.byteTranferred / snapshot.totalBytes) * 100;
+      var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      // console.log('Upload is ' + progress + '% done');
+      // อัพโหลดรูปใหม่เสร็จไปแล้ว 100%
   },
   (error) => {
       alert("error: image not download! cause: " +error)
   },()=>{
   
   getDownloadURL(uploadTask.snapshot.ref).then((downloadURL)=>{
-      console.log(downloadURL);
+    console.log(downloadURL);
+    if(id!=""){
+      // alert("edit med");
+      // updateMedicineData(medicineName, data, downloadURL, listStringOption)
+      updateMedicineData(id, medicineName, data, downloadURL, listStringOption)
+    }else{
+      // alert("add new med");
       addNewMedicineData(medicineName, data ,downloadURL, listStringOption, latestID);
+    }
   });
-  console.log("image is uploaded!")
 })}
 
 export async function addNewMedicineData(name, medData, url, option, count){
@@ -122,6 +157,21 @@ export async function addNewMedicineData(name, medData, url, option, count){
   // })
 }
 
+export async function updateMedicineData(id, name, data, url, option){
+  const ref = doc(db, "medicine", id);
+  await updateDoc(
+    ref, 
+    {
+      medicineName: name,
+      data: data,
+      imageURL: url,
+      useOption: option,
+    }
+  ).then(()=>{
+    alert("update medicine data success");
+  })
+}
+
 export async function deleteMedicine(id){
   if (confirm("Do you want to delete! medicine: " + id) == true) {
     // OK
@@ -133,3 +183,45 @@ export async function deleteMedicine(id){
   }
   // return 
 }
+
+export async function deletePatient(id){
+  if (confirm("Do you want to delete! medicine: " + id) == true) {
+    // OK
+    await deleteDoc(doc(db, "user-1", id));
+    alert("Delete medicine success!");
+    window.location.reload();
+  } else {
+    // canceled!
+  }
+  // return 
+}
+
+export async function getlogdroptime(id, logDropData){
+  var notiCount = 0;
+  var withoutnotiCount = 0;
+  var other = 0;
+  id.forEach(async function (value) {
+    let q = query(collection(db, "logdroptime-1"), where("pid", "==", value))
+    let docSnap = await getDocs(q);
+    // console.log(docSnap);
+    docSnap.forEach((doc) => {
+      var dateTime = new Date(doc.data().timestamp.seconds * 1000);
+      var time = dateTime.getHours()+ ":" +dateTime.getMinutes();
+      var scheduleTime = "";
+      if( doc.data().scheduleTime != undefined){
+        var scheduleTime = doc.data().scheduleTime
+      };
+      if(doc.data().button == "complete"){
+        notiCount++;
+      }else if(doc.data().button == "complete (without notification)"){
+        withoutnotiCount++;
+      }else{
+        other++;
+      }
+      logDropData.push({
+        
+      });
+      // AddLogdroptimeToTable(dateTime, time, doc.data().pid, scheduleTime, doc.data().button, notiCount, withoutnotiCount, other);
+    });
+  });
+}; 

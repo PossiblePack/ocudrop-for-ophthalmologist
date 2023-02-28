@@ -8,11 +8,11 @@
                         <div class="mb-4">
                             <div class="md-4 w-50 pb-4">
                                 <label class="form-label">ชื่อยา</label>
-                                <input class="form-control" type="text" id="medicineName" placeholder="กรุณาป้อนชื่อยา" required>
+                                <input class="form-control" type="text" id="medicineName" placeholder="กรุณาป้อนชื่อยา" :value="`${medData.name}`" required>
                             </div>
                             <div class="mb-4 w-75">
                                 <label class="form-label">ข้อมูลยา</label>
-                                <textarea class="form-control" id="data" cols="50" rows="3" placeholder="กรุณาป้อนข้อมูลยา" required></textarea>
+                                <textarea class="form-control" id="data" cols="50" rows="3" placeholder="กรุณาป้อนข้อมูลยา" :value="`${medData.data}`" required></textarea>
                             </div>
                             <div class="mb-sm-4 w-100">
                                 <label class="form-label">วิธีใช้ยา</label>
@@ -44,16 +44,17 @@
                             <div class="mb-4 w-75">
                                 <label class="form-label">รูปยา</label>
                                 <br>
-                                <img class="mb-2 border border-dark" id="img" style="width: 75%;">
+                                <img class="mb-2 border border-dark" id="img" :src="`${medData.imageURL}`" style="width: 75%;">
                                 <div class="mb-4">
                                     <label class="form-label">อัพโหลดรูปยา</label>
                                     <div class="row">
                                         <input class="col-6 " type="file" name="selectImage" id="selectImage" @change="showPhoto($event)" >
+                                        <!-- <button @click="upload">อัพโหลดรูปใหม่</button> -->
                                     </div>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-center">
-                                <button type="button" class="text-center btn btn-success w-25 " @click="CreateNewMedicine()">บันทึกข้อมูล</button>
+                                <button type="button" class="text-center btn btn-success w-25 " @click="UpdateMedicineData()">บันทึกข้อมูล</button>
                             </div>
                             
                         </div>
@@ -66,165 +67,177 @@
 
 
 <script>
-import { addNewMedicineData, getLatestMedicineID, uploadProcess } from '../firebase.js'
+import { uploadProcess, updateMedicineData } from '../firebase.js'
 export default {
     name: 'EditMedicine',
     async mounted() {
+        this.getOption()
     },
     created(){
         this.medData = this.$route.params.data
-        // document.getElementById('medicineName').value = 
+        this.listStringOption = this.medData.option
     },
-    // methods: {
-    //     addOption(){
-    //         // alert("add")
-    //         var checkboxes = document.querySelectorAll('.checkbox');
-    //         const morning = document.getElementById('sel-morning');
-    //         const noon = document.getElementById('sel-noon');
-    //         const evening = document.getElementById('sel-evening');
-    //         const bedtime = document.getElementById('sel-bedtime');
-    //         const times = document.getElementById('times');
-    //         const period = document.getElementById('period');  
+    methods: {
+        getOption(){
+            this.listStringOption.forEach((element, index) => {
+                this.createElement(this.listStringOption[index]);
+            });
+        },
+        addOption(){
+            var checkboxes = document.querySelectorAll('.checkbox');
+            const morning = document.getElementById('sel-morning');
+            const noon = document.getElementById('sel-noon');
+            const evening = document.getElementById('sel-evening');
+            const bedtime = document.getElementById('sel-bedtime');
+            const times = document.getElementById('times');
+            const period = document.getElementById('period');  
             
-    //         var checkboxexResult = [];
-    //         var optionNo = 0;
-    //         var stringResult = "";
+            var checkboxexResult = [];
+            var optionNo = 0;
+            var stringResult = "";
 
-    //         event.preventDefault();
-    //         for(let i = 0; i < checkboxes.length; i++){
-    //             if(checkboxes[i].checked == true){
-    //             checkboxexResult.push(checkboxes[i].value);
-    //             optionNo += 1
-    //             }
-    //         }
+            event.preventDefault();
+            for(let i = 0; i < checkboxes.length; i++){
+                if(checkboxes[i].checked == true){
+                checkboxexResult.push(checkboxes[i].value);
+                optionNo += 1
+                }
+            }
 
-    //         if(morning.checked==false&&noon.checked==false&&evening.checked==false&&bedtime.checked==false){
-    //             if(times.value==""&&period.value==""){
-    //             alert('กรุณากรอกวิธีการใช้ยา');
-    //             } else if(times.value==""){
-    //             alert('กรุณากรอกจำนวนครั้งการใช้ยา');
-    //             } else if(period.value==""){
-    //             alert('กรุณากรอกระยะเวลาในการเว้นการใช้ยา');
-    //             } else {
-    //             const string = 'วันละ ' + times.value + ' ครั้ง (ทุก ' + period.value + ' ชั่วโมง)'
-    //             stringResult = string
-    //             this.listStringOption.push(stringResult)
-    //             console.log(this.listStringOption)
-    //             this.createElement(stringResult);
-    //             }
-    //         }else{
-    //             const string = 'วันละ ' + optionNo + ' ครั้ง ' + checkboxexResult.join(' ');
-    //             stringResult = string
-    //             this.listStringOption.push(stringResult)
-    //             console.log(this.listStringOption)
-    //             this.createElement(stringResult);
-    //         }
-    //         this.resetForm()
-    //     },
-    //     createElement(stringResult){
-    //         const list_el = document.getElementById('list_option');
+            if(morning.checked==false&&noon.checked==false&&evening.checked==false&&bedtime.checked==false){
+                if(times.value==""&&period.value==""){
+                alert('กรุณากรอกวิธีการใช้ยา');
+                } else if(times.value==""){
+                alert('กรุณากรอกจำนวนครั้งการใช้ยา');
+                } else if(period.value==""){
+                alert('กรุณากรอกระยะเวลาในการเว้นการใช้ยา');
+                } else {
+                const string = 'วันละ ' + times.value + ' ครั้ง (ทุก ' + period.value + ' ชั่วโมง)'
+                stringResult = string
+                this.listStringOption.push(stringResult)
+                console.log(this.listStringOption)
+                this.createElement(stringResult);
+                }
+            }else{
+                const string = 'วันละ ' + optionNo + ' ครั้ง ' + checkboxexResult.join(' ');
+                stringResult = string
+                this.listStringOption.push(stringResult)
+                console.log(this.listStringOption)
+                this.createElement(stringResult);
+            }
+            this.resetForm()
+        },
+        createElement(stringResult){
+            const list_el = document.getElementById('list_option');
 
-    //         const option_card = document.createElement("div");
-    //         option_card.classList.add("card");
-    //         option_card.classList.add("mb-3");
-    //         option_card.classList.add("w-75");
+            const option_card = document.createElement("div");
+            option_card.classList.add("card");
+            option_card.classList.add("mb-3");
+            option_card.classList.add("w-75");
 
-    //         const option_el = document.createElement("div");
-    //         option_el.classList.add("task");
-    //         option_el.classList.add("card-body");
+            const option_el = document.createElement("div");
+            option_el.classList.add("task");
+            option_el.classList.add("card-body");
 
-    //         option_card.appendChild(option_el)
+            option_card.appendChild(option_el)
 
-    //         const option_row_el = document.createElement("div");
-    //         option_row_el.classList.add("row");
+            const option_row_el = document.createElement("div");
+            option_row_el.classList.add("row");
 
-    //         option_el.appendChild(option_row_el)
+            option_el.appendChild(option_row_el)
 
-    //         const option_content_el = document.createElement("div");
-    //         option_content_el.classList.add("content");
-    //         option_content_el.classList.add("col-sm-11");
+            const option_content_el = document.createElement("div");
+            option_content_el.classList.add("content");
+            option_content_el.classList.add("col-sm-11");
 
-    //         option_row_el.appendChild(option_content_el)
+            option_row_el.appendChild(option_content_el)
 
-    //         const option_input_el = document.createElement("p");
-    //         option_input_el.classList.add("text");
-    //         option_input_el.innerHTML = stringResult;
+            const option_input_el = document.createElement("p");
+            option_input_el.classList.add("text");
+            option_input_el.innerHTML = stringResult;
 
-    //         option_content_el.appendChild(option_input_el);
+            option_content_el.appendChild(option_input_el);
 
-    //         const option_action_el = document.createElement("div");
-    //         option_action_el.classList.add("col-sm-1");
+            const option_action_el = document.createElement("div");
+            option_action_el.classList.add("col-sm-1");
 
-    //         const option_delete_el = document.createElement("button");
-    //         option_delete_el.classList.add("delete");
-    //         option_delete_el.classList.add("btn");
-    //         option_delete_el.classList.add("btn-danger");
-    //         option_delete_el.innerHTML = "X";
+            const option_delete_el = document.createElement("button");
+            option_delete_el.classList.add("delete");
+            option_delete_el.classList.add("btn");
+            option_delete_el.classList.add("btn-danger");
+            option_delete_el.innerHTML = "X";
 
 
-    //         option_action_el.appendChild(option_delete_el);
+            option_action_el.appendChild(option_delete_el);
 
-    //         option_row_el.appendChild(option_action_el);
+            option_row_el.appendChild(option_action_el);
 
-    //         list_el.appendChild(option_card);
+            list_el.appendChild(option_card);
 
-    //         option_delete_el.addEventListener('click', () => {
-    //             list_el.removeChild(option_card);
-    //             let index = -1
-    //             for(let i = 0; i<this.listStringOption.length ; i++){
-    //             if(this.listStringOption[i] == option_input_el.innerHTML){
-    //                 index = i
-    //             }
-    //             }
-    //             this.listStringOption.splice(index,1)
-    //             console.log(this.listStringOption)
-    //         })
-    //     },
-    //     resetForm(){
-    //         document.getElementById('sel-morning').checked=false
-    //         document.getElementById('sel-noon').checked=false
-    //         document.getElementById('sel-evening').checked=false
-    //         document.getElementById('sel-morning').checked=false
-    //         times.value = ""
-    //         period.value = ""
-    //     },
-    //     showPhoto(event){
-    //         // var extention, fileName
-    //         var reader = new FileReader();
-    //         this.files = event.target.files;
+            option_delete_el.addEventListener('click', () => {
+                list_el.removeChild(option_card);
+                let index = -1
+                for(let i = 0; i<this.listStringOption.length ; i++){
+                if(this.listStringOption[i] == option_input_el.innerHTML){
+                    index = i
+                }
+                }
+                this.listStringOption.splice(index,1)
+                console.log(this.listStringOption)
+            })
+        },
+        resetForm(){
+            document.getElementById('sel-morning').checked=false
+            document.getElementById('sel-noon').checked=false
+            document.getElementById('sel-evening').checked=false
+            document.getElementById('sel-morning').checked=false
+            times.value = ""
+            period.value = ""
+        },
+        showPhoto(event){
+            this.change = true;
+            var reader = new FileReader();
+            this.files = event.target.files;
 
-    //         let ext = this.GetExtName(this.files[0]);
-    //         let name = this.GetName(this.files[0]);
+            let ext = this.GetExtName(this.files[0]);
+            let name = this.GetName(this.files[0]);
 
-    //         this.extention = ext
-    //         this.fileName = name
+            this.extention = ext
+            this.fileName = name
 
-    //         reader.readAsDataURL(this.files[0]);
-    //         reader.onload = function(){
-    //             document.getElementById('img').src = reader.result;
-    //         }
-    //     },
-    //     GetExtName(file) {
-    //         let temp = file.name.split(".");
-    //         let ext = temp.slice((temp.length-1),(temp.length));
-    //         return '.' + ext[0];
-    //     },
-    //     GetName(file){
-    //         let temp = file.name.split('.');
-    //         let name = temp.slice(0,-1).join('.');
-    //         return name;
-    //     },
-    //     // async CreateNewMedicine(){
-    //     //     this.medicineName = document.getElementById("medicineName").value;
-    //     //     this.data = document.getElementById("data").value;
-    //     //     // alert('create')
-    //     //     // console.log(document.getElementById('selectImage').value == '');
-    //     //     uploadProcess(this.files, this.fileName, this.extention, this.medicineName, this.data, this.listStringOption, this.latestID);
-    //     // },
-    // },
+            reader.readAsDataURL(this.files[0]);
+            reader.onload = function(){
+                document.getElementById('img').src = reader.result;
+            }
+        },
+        GetExtName(file) {
+            let temp = file.name.split(".");
+            let ext = temp.slice((temp.length-1),(temp.length));
+            return '.' + ext[0];
+        },
+        GetName(file){
+            let temp = file.name.split('.');
+            let name = temp.slice(0,-1).join('.');
+            return name;
+        },
+        async UpdateMedicineData(){
+            this.medData.name = document.getElementById("medicineName").value;
+            this.medData.data = document.getElementById("data").value;
+            // alert('create')
+            if(!this.change){
+                // alert("not change");
+                updateMedicineData(this.medData.id, this.medData.name, this.medData.data, this.medData.imageURL, this.listStringOption);
+            }else{
+                // alert("change");
+                uploadProcess(this.files, this.fileName, this.extention, this.medData.name, this.medData.data , this.listStringOption, this.latestID, this.medData.id);
+            }
+        },
+    },
     data () {
         return {
             medData: [],
+            listStringOption : [],
+            change: false,
         }
     }
 }
