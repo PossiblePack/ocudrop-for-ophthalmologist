@@ -1,8 +1,9 @@
 import { onUnmounted, ref } from 'vue';
 
 import { firebase, initializeApp, applicationDefault, cert } from 'firebase/app';
-import { updateDoc, addDoc, collection, getDocs, getFirestore, deleteDoc, doc } from "firebase/firestore";
+import { query, where, updateDoc, addDoc, collection, getDocs, getFirestore, deleteDoc, doc } from "firebase/firestore";
 import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL} from "firebase/storage"
+import $ from 'jquery' ;
 
 // Dyeac-Dev
 const firebaseConfig = {
@@ -224,4 +225,30 @@ export async function getlogdroptime(id, logDropData){
       // AddLogdroptimeToTable(dateTime, time, doc.data().pid, scheduleTime, doc.data().button, notiCount, withoutnotiCount, other);
     });
   });
+}; 
+
+export async function getPrescription(id, prescription){
+  // console.log(id.length);
+  if(id.length > 0){
+    $("#medLabel").html("ยาที่ใช้อยู่");
+    id.forEach(async function (value) {
+      let q = query(collection(db, "prescription-1"), where("pid", "==", value))
+      let docSnap = await getDocs(q);
+      // console.log(docSnap);
+      docSnap.forEach((doc) => {
+        if(doc.data().online == true){
+          // createMedicineCardList(doc.data().medicineName, doc.data().imageURL, doc.data().useOption);
+          prescription.push({
+            medicineName: doc.data().medicineName,
+            imageURL: doc.data().imageURL, 
+            option: doc.data().useOption
+          });
+          // console.log("online: " + doc.data().online)
+        };
+      });
+    });
+  }else{
+    $("#medLabel").html("ยังไม่ได้รับการจ่ายยา");
+  };
+  return prescription
 }; 

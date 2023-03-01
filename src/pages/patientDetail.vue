@@ -83,22 +83,26 @@ import Swiper, { Navigation, Pagination } from 'swiper';
 import $ from 'jquery' ;
 // import styles bundle
 // import 'swiper/css/bundle';
-import { getlogdroptime} from '../firebase.js'
+import { getlogdroptime, getPrescription } from '../firebase.js'
 
 export default {
     name: "PatientDetail",
-    created(){
+    async created(){
         this.patientData = this.$route.params.data
         this.id = this.patientData.id
+        this.history = this.patientData.history
+        await getPrescription(this.history, this.medicineList);
     },
     async mounted(){
         this.setupSwiper();
         this.setTable();
+        // this.setMedicineList(this.medicineList);
         // await getlogdroptime(this.id, this.logdrops)
     },
     data () {
         return {
             patientData: [],
+            medicineList: [],
             logdrops: [],
         }
     },
@@ -115,7 +119,78 @@ export default {
                 clickable: true,
               },
             });
-        }
+        },
+        setMedicineList(medicineList){
+            console.log(medicineList);
+            // Array.prototype.forEach.call(medicineList, medicine => {
+            //   // ...
+            //   console.log(medicine);
+            // })
+            // medicineList.forEach(medicine => {
+            //     console.log(medicine['medicineName']);
+            // });
+            // medicineList.forEach(element => {
+            //     // console.log(medicineList[element].medName);
+            //     console.log(element);
+            //     this.createMedicineCardList(medicineList[element].medName, medicineList[element].imgURL, medicineList[element].useOption);
+            // });
+        },
+        createMedicineCardList(medName, imgURL, useOption){
+            const wrapper = document.querySelector('.swiper-wrapper');
+
+            const swiper = document.createElement("div");
+            swiper.classList.add("swiper-slide");
+            swiper.classList.add("card");
+            swiper.classList.add("med-card");
+
+            const row = document.createElement("div");
+            row.classList.add("row");
+            row.classList.add("px-3");
+            row.classList.add("py-3");
+
+            const imgContainer = document.createElement("div");
+            imgContainer.classList.add("col-5");
+
+            const img = document.createElement("img");
+            img.id = 'image';
+            if(!imgURL.startsWith("https")){
+              changeLocationToURL(imgURL, img);
+            }else{
+              img.src = imgURL;
+            }
+
+
+            imgContainer.appendChild(img);
+
+            const info = document.createElement("div");
+            info.classList.add("info");
+            info.classList.add("col-5");
+
+            const labelName = document.createElement("LABEL");
+            labelName.innerHTML = "ชื่อยา: ";
+            const name = document.createElement("LABEL");
+            name.innerHTML = medName;
+            const br1 = document.createElement("br");
+            const br2 = document.createElement("br");
+            const labelUse = document.createElement("LABEL");
+            labelUse.innerHTML = "วิธีการใช้ยา: ";
+            const use = document.createElement("LABEL");
+            use.innerHTML = useOption;
+
+            info.appendChild(labelName);
+            info.appendChild(name);
+            info.appendChild(br1);
+            info.appendChild(br2);
+            info.appendChild(labelUse);
+            info.appendChild(use);
+
+            row.appendChild(imgContainer);
+            row.appendChild(info);
+
+            swiper.appendChild(row);
+
+            wrapper.appendChild(swiper);
+        },
     }
 }
 </script>

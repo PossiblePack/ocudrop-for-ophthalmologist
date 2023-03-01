@@ -42,7 +42,7 @@
     props: {
       title: {
         type: String,
-        default: 'Vue LBD'
+        default: 'DYEAC'
       },
       backgroundColor: {
         type: String,
