@@ -83,21 +83,23 @@ import Swiper, { Navigation, Pagination } from 'swiper';
 import $ from 'jquery' ;
 // import styles bundle
 // import 'swiper/css/bundle';
-import { getlogdroptime, getPrescription } from '../firebase.js'
+import { getlogdroptime, getPrescription, changeLocationToURL } from '../firebase.js'
 
 export default {
     name: "PatientDetail",
     async created(){
         this.patientData = this.$route.params.data
-        this.id = this.patientData.id
-        this.history = this.patientData.history
-        await getPrescription(this.history, this.medicineList);
     },
     async mounted(){
         this.setupSwiper();
-        this.setTable();
-        // this.setMedicineList(this.medicineList);
-        // await getlogdroptime(this.id, this.logdrops)
+        this.patientData.medicineList.forEach(medicine => {
+            if(medicine.online == true   ){
+               this.createMedicineCardList(medicine)
+               console.log(medicine);
+            }
+            // console.log(element);
+        });
+        this.setTable(); 
     },
     data () {
         return {
@@ -120,22 +122,7 @@ export default {
               },
             });
         },
-        setMedicineList(medicineList){
-            console.log(medicineList);
-            // Array.prototype.forEach.call(medicineList, medicine => {
-            //   // ...
-            //   console.log(medicine);
-            // })
-            // medicineList.forEach(medicine => {
-            //     console.log(medicine['medicineName']);
-            // });
-            // medicineList.forEach(element => {
-            //     // console.log(medicineList[element].medName);
-            //     console.log(element);
-            //     this.createMedicineCardList(medicineList[element].medName, medicineList[element].imgURL, medicineList[element].useOption);
-            // });
-        },
-        createMedicineCardList(medName, imgURL, useOption){
+        createMedicineCardList(med){
             const wrapper = document.querySelector('.swiper-wrapper');
 
             const swiper = document.createElement("div");
@@ -153,10 +140,10 @@ export default {
 
             const img = document.createElement("img");
             img.id = 'image';
-            if(!imgURL.startsWith("https")){
-              changeLocationToURL(imgURL, img);
+            if(!med.imageURL.startsWith("https")){
+              changeLocationToURL(med.imageURL, img);
             }else{
-              img.src = imgURL;
+              img.src = med.imageURL;
             }
 
 
@@ -169,13 +156,13 @@ export default {
             const labelName = document.createElement("LABEL");
             labelName.innerHTML = "ชื่อยา: ";
             const name = document.createElement("LABEL");
-            name.innerHTML = medName;
+            name.innerHTML = med.medicineName;
             const br1 = document.createElement("br");
             const br2 = document.createElement("br");
             const labelUse = document.createElement("LABEL");
             labelUse.innerHTML = "วิธีการใช้ยา: ";
             const use = document.createElement("LABEL");
-            use.innerHTML = useOption;
+            use.innerHTML = med.useOption;
 
             info.appendChild(labelName);
             info.appendChild(name);
@@ -191,12 +178,59 @@ export default {
 
             wrapper.appendChild(swiper);
         },
-    }
+    },
+    
 }
 </script>
 
 <style>
 
+.swiper {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+}
 
+.swiper-wrapper {
+  width: 90%;
+  margin-right: 10px;
+  margin-bottom: 20px;
+}
+
+.swiper-slide {
+  /* text-align: center; */
+  font-size: 16px;
+  background: #fff;
+
+  /* Center slide text vertically */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+/* .med-card{
+  background-color: #F1F9FF;
+  border: 1px solid #358CED;
+  width: 200px;
+  height: 300px;
+  overflow: hidden;
+} */
+
+.med-card img{
+  align-self: center;
+  width: 160px;
+  height: 160px;
+  border: 1px solid #000;
+  object-fit: cover;
+}
 
 </style>

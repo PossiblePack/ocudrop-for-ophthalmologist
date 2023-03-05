@@ -1,7 +1,7 @@
 import { onUnmounted, ref } from 'vue';
 
 import { firebase, initializeApp, applicationDefault, cert } from 'firebase/app';
-import { query, where, updateDoc, addDoc, collection, getDocs, getFirestore, deleteDoc, doc } from "firebase/firestore";
+import { query, where, updateDoc, addDoc, collection, getDocs, getDoc, getFirestore, deleteDoc, doc } from "firebase/firestore";
 import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL} from "firebase/storage"
 import $ from 'jquery' ;
 
@@ -66,6 +66,13 @@ export async function getPatient(patient) {
     var doctorName = doc.data().doctorname; 
     var history = doc.data().history;    
     var password = doc.data().password;
+    var medicineList = [];
+
+    history.forEach(async element => {
+      // console.log(element)
+      var data = await getPrescription(element);
+      medicineList.push(data);
+    });
 
     var dateTime = new Date(createTime.seconds * 1000);
     var createDate = dateTime.getDate()+ "/"+(dateTime.getMonth()+1)+ "/"+dateTime.getFullYear();
@@ -80,7 +87,7 @@ export async function getPatient(patient) {
       phoneNo: phoneNo,
       lastModifyTime: lastModifyTime,
       doctorName: doctorName,
-      history: history,
+      medicineList: medicineList,
       docID: docID,
       password: password,
     });
@@ -220,35 +227,44 @@ export async function getlogdroptime(id, logDropData){
         other++;
       }
       logDropData.push({
-        
       });
-      // AddLogdroptimeToTable(dateTime, time, doc.data().pid, scheduleTime, doc.data().button, notiCount, withoutnotiCount, other);
     });
   });
 }; 
 
-export async function getPrescription(id, prescription){
-  // console.log(id.length);
-  if(id.length > 0){
-    $("#medLabel").html("ยาที่ใช้อยู่");
-    id.forEach(async function (value) {
-      let q = query(collection(db, "prescription-1"), where("pid", "==", value))
-      let docSnap = await getDocs(q);
-      // console.log(docSnap);
-      docSnap.forEach((doc) => {
-        if(doc.data().online == true){
-          // createMedicineCardList(doc.data().medicineName, doc.data().imageURL, doc.data().useOption);
-          prescription.push({
-            medicineName: doc.data().medicineName,
-            imageURL: doc.data().imageURL, 
-            option: doc.data().useOption
-          });
-          // console.log("online: " + doc.data().online)
-        };
-      });
-    });
-  }else{
-    $("#medLabel").html("ยังไม่ได้รับการจ่ายยา");
-  };
-  return prescription
+export async function getPrescription(id){
+  const docRef = doc(db, "prescription-1", id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    // console.log("Document data:", docSnap.data());
+    return docSnap.data();
+  } else {
+    // doc.data() will be undefined in this case
+    // return [];
+  }
 }; 
+
+export async function changeLocationToURL(storageLocation, item){
+  const arr = storageLocation.split("/");
+  const folderName = arr[arr.length-2];
+  const fileName = arr[arr.length-1];
+  console.log(arr);
+  console.log(folderName+"/"+fileName);
+
+  const storage = getStorage();
+  getDownloadURL(sRef(storage, folderName+"/"+fileName))
+    .then((url) => {
+
+      item.src = url;
+    })
+    // .catch((error) => {
+    //   Swal.fire({
+    //     icon: 'error',
+    //     title: 'Oops...!',
+    //     text: "Something went wrong because: "+ error,
+    //     showConfirmButton: false,
+    //     showDenyButton: true,
+    //     denyButtonText: `Close`,
+    //   });  
+    // });
+};
