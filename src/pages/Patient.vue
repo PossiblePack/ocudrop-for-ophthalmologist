@@ -69,9 +69,9 @@ export default {
 		// 		optionString = medOption.toString()
 		// 	}
 		// },
-
 		patientDetail(patient){
 			this.$router.push({ name: 'patientDetail', params: {data: patient , id:patient.docID}})
+			
 		},
 	},
 	data () {

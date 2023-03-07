@@ -66,13 +66,6 @@ export async function getPatient(patient) {
     var doctorName = doc.data().doctorname; 
     var history = doc.data().history;    
     var password = doc.data().password;
-    var medicineList = [];
-
-    history.forEach(async element => {
-      // console.log(element)
-      var data = await getPrescription(element);
-      medicineList.push(data);
-    });
 
     var dateTime = new Date(createTime.seconds * 1000);
     var createDate = dateTime.getDate()+ "/"+(dateTime.getMonth()+1)+ "/"+dateTime.getFullYear();
@@ -87,7 +80,7 @@ export async function getPatient(patient) {
       phoneNo: phoneNo,
       lastModifyTime: lastModifyTime,
       doctorName: doctorName,
-      medicineList: medicineList,
+      history: history,
       docID: docID,
       password: password,
     });
@@ -123,8 +116,6 @@ export async function uploadProcess(files, fileName, extention, medicineName, da
 
   uploadTask.on('state-change', (snapshot) => {
       var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      // console.log('Upload is ' + progress + '% done');
-      // อัพโหลดรูปใหม่เสร็จไปแล้ว 100%
   },
   (error) => {
       alert("error: image not download! cause: " +error)
@@ -134,7 +125,6 @@ export async function uploadProcess(files, fileName, extention, medicineName, da
     console.log(downloadURL);
     if(id!=""){
       // alert("edit med");
-      // updateMedicineData(medicineName, data, downloadURL, listStringOption)
       updateMedicineData(id, medicineName, data, downloadURL, listStringOption)
     }else{
       // alert("add new med");
@@ -240,7 +230,6 @@ export async function getPrescription(id){
     return docSnap.data();
   } else {
     // doc.data() will be undefined in this case
-    // return [];
   }
 }; 
 

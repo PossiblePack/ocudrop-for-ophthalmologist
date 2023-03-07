@@ -23,10 +23,10 @@
                                 <span class="form-label">อีเมล: </span>
                                 <span id="email" >{{patientData.email}}</span>
                             </div>
-                            <div class="mb-2">
+                            <!-- <div class="mb-2">
                                 <span class="form-label">แพทย์ผู้ดูแล: </span>
                                 <span id="doctor" >{{patientData.doctor}}</span>
-                            </div>
+                            </div> -->
                             <h4  class="mb-2 mt-5" id="medLabel">ยาที่ใช้อยู่</h4>
                             <div>
                                 <div id="medicineList" class="swiper mySwiper">
@@ -78,28 +78,30 @@
 
 
 <script>
-// import Swiper bundle with all modules installed
-import Swiper, { Navigation, Pagination } from 'swiper';
 import $ from 'jquery' ;
-// import styles bundle
-// import 'swiper/css/bundle';
+import Swiper from 'swiper';
+
+// Import Swiper styles
+import 'swiper/swiper.min.css'
+
 import { getlogdroptime, getPrescription, changeLocationToURL } from '../firebase.js'
 
 export default {
     name: "PatientDetail",
     async created(){
-        this.patientData = this.$route.params.data
+        try{
+            this.patientData = this.$route.params.data;
+            await this.getMedicineList(this.patientData.history, this.medicineList)
+        }
+        catch(err){
+            alert("error cause: " + err)
+        }
     },
     async mounted(){
-        this.setupSwiper();
-        this.patientData.medicineList.forEach(medicine => {
-            if(medicine.online == true   ){
-               this.createMedicineCardList(medicine)
-               console.log(medicine);
-            }
-            // console.log(element);
-        });
         this.setTable(); 
+        setTimeout(()=> {
+            this.setupSwiper();
+        },800);
     },
     data () {
         return {
@@ -110,8 +112,8 @@ export default {
     },
     methods: {
         setTable(){ 
-			$('#logdropdata').DataTable({})
-		},
+          $('#logdropdata').DataTable({})
+        },
         setupSwiper(){
             var swiper = new Swiper(".mySwiper", {
               slidesPerView: 2,
@@ -122,17 +124,34 @@ export default {
               },
             });
         },
+        async getMedicineList(history){
+            try{
+                history.forEach(async element => {
+                var data = await getPrescription(element);
+                if(data != undefined){
+                  if(data.online == true){
+                      this.createMedicineCardList(data);
+                      console.log(data);
+                  };
+                }
+              });
+            }catch(err){
+                alert("error cause: "+ err);
+            }finally{
+                this.setupSwiper();
+            }
+        },
         createMedicineCardList(med){
             const wrapper = document.querySelector('.swiper-wrapper');
 
             const swiper = document.createElement("div");
             swiper.classList.add("swiper-slide");
-            swiper.classList.add("card");
+            // swiper.classList.add("card");
             swiper.classList.add("med-card");
 
             const row = document.createElement("div");
             row.classList.add("row");
-            row.classList.add("px-3");
+            // row.classList.add("px-3");
             row.classList.add("py-3");
 
             const imgContainer = document.createElement("div");
@@ -151,23 +170,24 @@ export default {
 
             const info = document.createElement("div");
             info.classList.add("info");
+            info.classList.add("text-black");
             info.classList.add("col-5");
 
-            const labelName = document.createElement("LABEL");
+            const labelName = document.createElement("p");
             labelName.innerHTML = "ชื่อยา: ";
-            const name = document.createElement("LABEL");
+            const name = document.createElement("p");
             name.innerHTML = med.medicineName;
-            const br1 = document.createElement("br");
-            const br2 = document.createElement("br");
-            const labelUse = document.createElement("LABEL");
+            // const br1 = document.createElement("br");
+            // const br2 = document.createElement("br");
+            const labelUse = document.createElement("p");
             labelUse.innerHTML = "วิธีการใช้ยา: ";
-            const use = document.createElement("LABEL");
+            const use = document.createElement("p");
             use.innerHTML = med.useOption;
 
             info.appendChild(labelName);
             info.appendChild(name);
-            info.appendChild(br1);
-            info.appendChild(br2);
+            // info.appendChild(br1);
+            // info.appendChild(br2);
             info.appendChild(labelUse);
             info.appendChild(use);
 
@@ -198,11 +218,9 @@ export default {
 }
 
 .swiper-slide {
-  /* text-align: center; */
   font-size: 16px;
-  background: #fff;
+  background: #ffffff;
 
-  /* Center slide text vertically */
   display: -webkit-box;
   display: -ms-flexbox;
   display: -webkit-flex;
@@ -217,20 +235,36 @@ export default {
   align-items: center;
 }
 
-/* .med-card{
+.card{
+  border-radius: 25px;
+}
+
+.med-card{
   background-color: #F1F9FF;
   border: 1px solid #358CED;
   width: 200px;
-  height: 300px;
+  height: 250px;
   overflow: hidden;
-} */
+  border-radius: 30px;
+} 
+
+.med-card p{
+  color: #000;
+} 
 
 .med-card img{
   align-self: center;
   width: 160px;
-  height: 160px;
-  border: 1px solid #000;
+  height: 200px;
+  border: 2px solid #000;
   object-fit: cover;
-}
+} 
+
+.info{
+  margin-left: 10px;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+};
 
 </style>

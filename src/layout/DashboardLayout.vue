@@ -7,18 +7,18 @@
         <p>แดชบอร์ด</p>
       </sidebar-link>
       <sidebar-link to="/admin/medicine">
-        <i class="nc-icon nc-single-02"></i>
+        <i class="nc-icon nc-notes"></i>
         <p>ข้อมูลยา</p>
       </sidebar-link>
       <sidebar-link to="/admin/patient">
-        <i class="nc-icon nc-single-02"></i>
+        <i class="nc-icon nc-notes"></i>
         <p>ข้อมูลผู้ป่วย</p>
       </sidebar-link>
       <sidebar-link to="/admin/registerpatient">
         <i class="nc-icon nc-single-02"></i>
         <p>ลงทะเบียนผู้ป่วยใหม่</p>
       </sidebar-link>
-      <sidebar-link to="/admin/user">
+      <!-- <sidebar-link to="/admin/user">
         <i class="nc-icon nc-circle-09"></i>
         <p>User Profile</p>
       </sidebar-link>
@@ -33,7 +33,7 @@
       <sidebar-link to="/admin/notifications">
         <i class="nc-icon nc-bell-55"></i>
         <p>Notifications</p>
-      </sidebar-link>
+      </sidebar-link> -->
       
       <!-- <template slot="bottom-links">
         <sidebar-link class="active"
