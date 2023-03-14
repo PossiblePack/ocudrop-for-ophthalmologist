@@ -4,7 +4,7 @@
             <div class="mt-3 container-fluid px-5 card">
                 <div class="card-body">
                     <h2 class="mt-5 mb-4 d-flex justify-content-center">ลงทะเบียนผู้ป่วยใหม่</h2>
-                    <form class="mt-4 mb-4" action="">
+                    <form class="mt-4 mb-4" action="" form v-on:submit="registerPatient">
                             <div class="row ">
                                 <div class="col-6">
                                     <label class="form-label">ชื่อ</label>
@@ -39,7 +39,7 @@
                                 <div class="col-6">
                                 </div>
                                 <div class="mt-4">
-                                    <button type="submit" class="btn bg-success text-white" name="submitData" id="submitData">บันทึกข้อมูล</button>
+                                    <button type="submit" class="btn bg-success text-white"  >บันทึกข้อมูล</button>
                                 </div>
                             </div>
                     </form>
@@ -51,8 +51,31 @@
 
 
 <script>
+import { createPatient } from '../firebase.js'
+
+
 export default {
     name: "RegisterPatient",
+    methods: {
+        async registerPatient(e){
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const surname = document.getElementById('surname').value;
+            const phoneNO = document.getElementById('phoneNO').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const repassword = document.getElementById('repassword').value;
+            const dname = document.getElementById('doctorname').value;
+            const dateTime = new Date(Date.now());
+
+            if(password == repassword){
+                await createPatient(name, surname, phoneNO, email, password, dateTime, dname)
+            }else{
+                alert("password mismatch");
+            }
+            // alert(name + " " + surname + " " + phoneNO + " " + email + " " + password + " " + repassword);
+        },
+    },
 }
 </script>
 

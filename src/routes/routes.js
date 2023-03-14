@@ -11,6 +11,7 @@ import UserProfile from 'src/pages/UserProfile.vue'
 import AddMedicine from 'src/pages/AddMedicine.vue'
 import EditMedicine from 'src/pages/EditMedicine.vue'
 import patientDetail from 'src/pages/patientDetail.vue'
+import EditMedicineList from 'src/pages/EditMedicineList.vue'
 import Icons from 'src/pages/Icons.vue'
 import Maps from 'src/pages/Maps.vue'
 import Notifications from 'src/pages/Notifications.vue'
@@ -47,6 +48,11 @@ const routes = [
         path: '/medicine/:id', 
         name: 'editMedicine', 
         component: EditMedicine 
+      }, 
+      {
+        path: '/medicineList/:id', 
+        name: 'editMedicineList', 
+        component: EditMedicineList 
       }, 
       {
         path: '/patient/:id', 

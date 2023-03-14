@@ -4,6 +4,19 @@ import BaseRadio from './components/Inputs/BaseRadio.vue'
 import BaseDropdown from './components/BaseDropdown.vue'
 import Card from './components/Cards/Card.vue'
 
+/* import the fontawesome core */
+import { library } from '@fortawesome/fontawesome-svg-core'
+
+/* import font awesome icon component */
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+/* import specific icons */
+import { faUser, faUserSecret } from '@fortawesome/free-solid-svg-icons'
+
+/* add icons to the library */
+library.add(faUserSecret, faUser)
+
+
 /**
  * You can register global components here and use them as a plugin in your main Vue instance
  */
@@ -11,6 +24,7 @@ import Card from './components/Cards/Card.vue'
 const GlobalComponents = {
   install (Vue) {
     Vue.component(BaseInput.name, BaseInput)
+    // Vue.component('fa', FontAwesomeIcon)     22 
     Vue.component(BaseCheckbox.name, BaseCheckbox)
     Vue.component(BaseRadio.name, BaseRadio)
     Vue.component(BaseDropdown.name, BaseDropdown)

@@ -4,7 +4,7 @@
             <div class="mt-3 container-fluid px-5 card">
                 <div class="card-body">
                     <h2 class="mt-5 mb-4 d-flex justify-content-center">ข้อมูลผู้ป่วย</h2>
-                    <div class="mb-1 mx-4">
+                    <div class="mb-1">
                         <div class="mb-4 pb-4">
                             <h4  class="mb-2">ข้อมูลทั่วไป</h4>
                             <div class="mb-2">
@@ -13,7 +13,7 @@
                             </div>
                             <div class="mb-2">
                                 <span class="form-label">เบอร์โทรศัพท์: </span>
-                                <span id="phoneNO" >{{patientData.phoneNO}}</span>
+                                <span id="phoneNO" >{{patientData.phoneNo}}</span>
                             </div>
                             <!-- <div class="mb-2">
                                 <span class="form-label">รหัสผ่าน: </span>
@@ -27,12 +27,16 @@
                                 <span class="form-label">แพทย์ผู้ดูแล: </span>
                                 <span id="doctor" >{{patientData.doctor}}</span>
                             </div> -->
-                            <h4  class="mb-2 mt-5" id="medLabel">ยาที่ใช้อยู่</h4>
-                            <div>
-                                <div id="medicineList" class="swiper mySwiper">
+                            <h4  class="mb-2 mt-5" id="medLabel" v-if="haveMedicine">ยาที่ใช้อยู่</h4>
+                            <h4 class="mb-2 mt-5" v-else>ยังไม่ได้จ่ายยา <button class="btn btn-link" @click="this.editMedicineList">เพิ่มยา</button></h4>
+                            <div v-if="haveMedicine">
+                                <div id="medicineList" class="swiper mySwiper" v-if="haveMedicine">
                                     <div class="swiper-wrapper">
                                     </div>
                                     <div class="swiper-pagination"></div>  
+                                </div>
+                                <div class="d-flex justify-content-end pe-5">
+                                    <button class="btn btn-link" @click="this.editMedicineList">แก้ไขรายการยา</button>
                                 </div>
                             </div>
                             <h4 class="mb-2 mt-5"> ข้อมูลการหยอดตา</h4>
@@ -102,12 +106,20 @@ export default {
         setTimeout(()=> {
             this.setupSwiper();
         },800);
+        if(this.patientData.history.length == 0){
+
+            // alert("no medicine");
+        }else{
+            this.haveMedicine = true;
+        };
     },
     data () {
         return {
             patientData: [],
-            medicineList: [],
+            currentMedicine: [],
+            oldMedicine: [],
             logdrops: [],
+            haveMedicine: false,
         }
     },
     methods: {
@@ -116,7 +128,7 @@ export default {
         },
         setupSwiper(){
             var swiper = new Swiper(".mySwiper", {
-              slidesPerView: 2,
+              slidesPerView: 2.2,
               spaceBetween: 20,
               pagination: {
                 el: ".swiper-pagination",
@@ -124,6 +136,9 @@ export default {
               },
             });
         },
+        editMedicineList(){
+			this.$router.push({ name: 'editMedicineList', params: {current: this.currentMedicine, old: this.oldMedicine , id:this.patientData.docID}})
+		},
         async getMedicineList(history){
             try{
                 history.forEach(async element => {
@@ -131,8 +146,11 @@ export default {
                 if(data != undefined){
                   if(data.online == true){
                       this.createMedicineCardList(data);
-                      console.log(data);
-                  };
+                      this.currentMedicine.push(data);
+                    //   console.log(data);
+                  }else{
+                    this.oldMedicine.push(data);
+                  }
                 }
               });
             }catch(err){
@@ -151,8 +169,8 @@ export default {
 
             const row = document.createElement("div");
             row.classList.add("row");
-            // row.classList.add("px-3");
-            row.classList.add("py-3");
+            // row.classList.add("ps-2");
+            row.classList.add("pt-3");
 
             const imgContainer = document.createElement("div");
             imgContainer.classList.add("col-5");
@@ -171,14 +189,12 @@ export default {
             const info = document.createElement("div");
             info.classList.add("info");
             info.classList.add("text-black");
-            info.classList.add("col-5");
+            info.classList.add("col-6");
 
             const labelName = document.createElement("p");
             labelName.innerHTML = "ชื่อยา: ";
             const name = document.createElement("p");
             name.innerHTML = med.medicineName;
-            // const br1 = document.createElement("br");
-            // const br2 = document.createElement("br");
             const labelUse = document.createElement("p");
             labelUse.innerHTML = "วิธีการใช้ยา: ";
             const use = document.createElement("p");
@@ -186,16 +202,11 @@ export default {
 
             info.appendChild(labelName);
             info.appendChild(name);
-            // info.appendChild(br1);
-            // info.appendChild(br2);
             info.appendChild(labelUse);
             info.appendChild(use);
-
             row.appendChild(imgContainer);
             row.appendChild(info);
-
             swiper.appendChild(row);
-
             wrapper.appendChild(swiper);
         },
     },
@@ -206,7 +217,7 @@ export default {
 <style>
 
 .swiper {
-  width: 100%;
+  width: 90%;
   height: 300px;
   overflow: hidden;
 }
@@ -246,24 +257,20 @@ export default {
   height: 250px;
   overflow: hidden;
   border-radius: 30px;
-} 
-
-.med-card p{
-  color: #000;
-} 
+}
 
 .med-card img{
   align-self: center;
   width: 160px;
-  height: 200px;
-  border: 2px solid #000;
+  height: 160px;
+  border: 1px solid #000;
   object-fit: cover;
 } 
 
 .info{
   margin-left: 10px;
-  height: 100%;
-  width: 100%;
+  height: 90%;
+  width: 90%;
   overflow: hidden;
 };
 
