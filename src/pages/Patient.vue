@@ -7,21 +7,21 @@
 				<h2 class="mt-5 mb-4 d-flex justify-content-center">ข้อมูลผู้ป่วย</h2>
               <div class="mb-4">
                   <div>
-					<table class=" table table-bordered display justify-content-center" id="patientTable">
+					<table class=" table table-bordered  justify-content-center" id="patientTable">
 						<thead class="bg-primary">
 							<tr>
 								<th class="text-white" >ชื่อ-สกุล</th>
 								<th class="text-white" >เบอร์โทรศัพท์</th>
 								<th class="text-white" >วันที่สร้างบัญชี</th>
-								<th class="text-white" ></th>
+								<th class="bg-primary text-white">การจัดการข้อมูล</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr v-for=" patient in  this.patients" :key="patient.medID">
-								<td style="width: 40%;">{{patient.name+" "+patient.surname}}</td>
-								<td style="width: 10%;">{{patient.phoneNo}}</td>
-								<td style="width: 20%;">{{patient.createTime}}</td>
-								<td style="width: 30%;">
+								<td >{{patient.name+" "+patient.surname}}</td>
+								<td >{{patient.phoneNo}}</td>
+								<td >{{patient.createTime}}</td>
+								<td >
 									<button class="btn btn-primary btn-sm " @click="patientDetail(patient)">
 										ข้อมูลเพิ่มเติม
 									</button>
@@ -44,6 +44,8 @@
 import LTable from 'src/components/Table.vue'
 import Card from 'src/components/Cards/Card.vue'
 import $ from 'jquery' ;
+import 'datatables.net-buttons-bs5';
+import 'datatables.net-responsive-bs5';
 import { getPatient } from '../firebase.js'
 export default {
 	name: 'Patient',
@@ -57,7 +59,16 @@ export default {
 	},
 	methods: {
 		setTable(){ 
-			$('#patientTable').DataTable({})
+			$('#patientTable').DataTable({
+				responsive: true,
+				autoWidth: false,
+				"columns": [
+  				  { "width": "30%"},
+  				  { "width": "30%"},
+  				  { "width": "30%"},
+  				  {},
+  				]
+			})
 		},
 		// setMedicineOption(){
 		// 	var optionString = ""
@@ -84,5 +95,7 @@ export default {
 </script>
 
 <style>
-
+/* .action{
+	width: 10%;
+} */
 </style>

@@ -95,7 +95,12 @@ export default {
     async created(){
         try{
             this.patientData = this.$route.params.data;
-            await this.getMedicineList(this.patientData.history, this.medicineList)
+            if(this.patientData.history.length == 0){
+            // alert("no medicine");
+            }else{
+                this.haveMedicine = true;
+                await this.getMedicineList(this.patientData.history, this.medicineList)
+            };
         }
         catch(err){
             alert("error cause: " + err)
@@ -106,12 +111,7 @@ export default {
         setTimeout(()=> {
             this.setupSwiper();
         },800);
-        if(this.patientData.history.length == 0){
-
-            // alert("no medicine");
-        }else{
-            this.haveMedicine = true;
-        };
+        
     },
     data () {
         return {
@@ -124,7 +124,8 @@ export default {
     },
     methods: {
         setTable(){ 
-          $('#logdropdata').DataTable({})
+          $('#logdropdata').DataTable({
+          })
         },
         setupSwiper(){
             var swiper = new Swiper(".mySwiper", {

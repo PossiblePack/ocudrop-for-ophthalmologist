@@ -1,7 +1,7 @@
 <!-- eslint-disable no-mixed-spaces-and-tabs -->
 <template>
 <section class="content bg">
-    <div class="mx-5 rounded h-100 d-flex align-items-center justify-content-center">
+    <div class="mx-5 d-flex align-items-center justify-content-center">
       <div class="mt-3 container-fluid card">
           <div class="mx-2 card-body">
 				<h2 class="mt-5 mb-4 d-flex justify-content-center">ข้อมูลยา</h2>
@@ -13,28 +13,28 @@
 						</div>
 					</router-link>
 					<table class=" table table-bordered display justify-content-center" id="medicineTable">
-						<thead class="bg-primary">
+						<thead >
 							<tr>
-								<th class="text-white" >รหัส</th>
-								<th class="text-white" >ชื่อยา</th>
-								<th class="text-white" >รูปยา</th>
-								<th class="text-white" >รายละเอียด</th>
-								<th class="text-white" >วิธีการใช้ยา</th>
-								<th class="text-white" ></th>
+								<th style="width: 10%" class="bg-primary text-white" >รหัส</th>
+								<th style="width: 10%" class="bg-primary text-white" >ชื่อยา</th>
+								<th style="width: 20%" class="bg-primary text-white" >รูปยา</th>
+								<th style="width: 20%" class="bg-primary text-white" >รายละเอียด</th>
+								<th style="width: 20%" class="bg-primary text-white" >วิธีการใช้ยา</th>
+								<th class="bg-primary text-white">การจัดการข้อมูล</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr v-for=" medicine in  this.medicines" :key="medicine.medID">
-								<td style="width: 5%;">{{medicine.medID}}</td>
-								<td style="width: 5%;">{{medicine.name}}</td>
-								<td style="width: 20%;"><img v-bind:src="medicine.imageURL" width="250px" alt=""></td>
-								<td style="width: 20%;">{{medicine.data}}</td>
-								<td style="width: 20%;">{{medicine.option}}</td>
-								<td >
-									<button class="btn btn-success btn-sm " @click="editMedicine(medicine.id,medicine.medID,medicine.name,medicine.imageURL,medicine.data,medicine.option)">
+								<td >{{medicine.medID}}</td>
+								<td >{{medicine.name}}</td>
+								<td ><img v-bind:src="medicine.imageURL" height="150px" alt=""></td>
+								<td >{{medicine.data}}</td>
+								<td >{{medicine.option}}</td>
+								<td style="height: 150px;width: 100%;">
+									<button class="btn btn-success btn-sm h-25" @click="editMedicine(medicine.id,medicine.medID,medicine.name,medicine.imageURL,medicine.data,medicine.option)">
 										แก้ไข
 									</button>
-									<button class="btn btn-danger btn-sm ms-5" @click="deleteMedicine(medicine.id)">
+									<button class="btn btn-danger btn-sm ms-5 h-25" @click="deleteMedicine(medicine.id)">
 										ลบ
 									</button>
 								</td>
@@ -63,13 +63,30 @@ export default {
 		LTable,
       	Card,
     },
+	async created() {
+		await getMedicines(this.medicines).then( () => {
+			setTimeout(()=> {
+        	    this.setTable()
+        	},800);
+		})
+	},
 	async mounted() {
-		await getMedicines(this.medicines)
-		this.setTable()
+		
+		
 	},
 	methods: {
 		setTable(){ 
-			$('#medicineTable').DataTable({})
+			$('#medicineTable').DataTable({
+				autoWidth: false,
+				"columns": [
+  				  { "width": "5%" , "height": "100%"},
+  				  { "width": "5%" , "height": "100%"},
+  				  { "width": "20%" , "height": "100%"},
+  				  { "width": "20%" , "height": "100%"},
+  				  { "width": "30%" , "height": "100%"},
+				  { "height": "100%"},
+  				]
+			})
 		},
 		// setMedicineOption(){
 		// 	var optionString = ""
@@ -103,5 +120,7 @@ export default {
 </script>
 
 <style>
-
+.card{
+	overflow: auto;	
+}
 </style>

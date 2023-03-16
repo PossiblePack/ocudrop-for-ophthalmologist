@@ -2,7 +2,6 @@
     <main >
         <Popup 
         v-if="isShowModal"
-        :title="ModalTitle"
         @close="close"
         >
         <template #body>
@@ -101,6 +100,7 @@ export default {
             oldMedicines: [],
             currentMedicines: [],
             isShowModal: false,
+            modalTitle: "",
         }
     },
     methods: {

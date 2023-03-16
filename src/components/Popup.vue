@@ -2,7 +2,7 @@
     <div class="bg_modal " > 
         <div class="box_modal  w-lg-50">
             <header class="modal-header">
-                <h5 class="modal__title">เพิ่มยา</h5>
+                <h5 class="modal__title">{{this.title}}</h5>
                 <button class="btn btn-danger" @click="close">X</button>
             </header>
             <section class="modal-body d-flex justify-content-center">
@@ -22,11 +22,10 @@
 <script>
 export default {
     name: 'Popup',
-    props: {
-      title: {
-        type: String,
-        required: false
-      }
+    data () {
+        return {
+            title : "ระบบการจ่ายยา",
+        }
     },
     methods: {
         close() {
@@ -92,7 +91,8 @@ export default {
     color: #fff;
 }
 .modal__title{
-    padding-top: 10px;
+    margin-top: auto;
+    padding-bottom: auto;
     padding-left: 10px;
     font-weight: 600;
     font-size: 24px;
