@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
 import { faUser, faUserSecret } from '@fortawesome/free-solid-svg-icons'
-
+import Select2 from 'vue3-select2-component';
 /* add icons to the library */
 library.add(faUserSecret, faUser)
 
@@ -24,7 +24,8 @@ library.add(faUserSecret, faUser)
 const GlobalComponents = {
   install (Vue) {
     Vue.component(BaseInput.name, BaseInput)
-    // Vue.component('fa', FontAwesomeIcon)     22 
+    // Vue.component('fa', FontAwesomeIcon)
+    Vue.component('Select2', Select2)
     Vue.component(BaseCheckbox.name, BaseCheckbox)
     Vue.component(BaseRadio.name, BaseRadio)
     Vue.component(BaseDropdown.name, BaseDropdown)

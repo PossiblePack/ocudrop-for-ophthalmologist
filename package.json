@@ -41,7 +41,8 @@
     "vue": "2.7.14",
     "vue-router": "3.0.2",
     "vue2-google-maps": "0.10.7",
-    "vue3-easy-data-table": "^1.5.31"
+    "vue3-easy-data-table": "^1.5.31",
+    "vue3-select2-component": "^0.1.7"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "3.12.1",
