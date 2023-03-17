@@ -6,6 +6,12 @@ function resolveSrc(_path) {
 }
 
 module.exports = {
+  // devServer: {
+  //   disableHostCheck: true,
+  //   port: 4000,
+  //   public: '0.0.0.0:4000'
+  // },
+  // publicPath: "/",
   lintOnSave: false,
   configureWebpack: {
     // Set up all the aliases we use in our app.

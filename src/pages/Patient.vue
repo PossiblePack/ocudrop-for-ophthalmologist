@@ -56,6 +56,7 @@ export default {
 	async mounted() {
 		await getPatient(this.patients)
 		this.setTable()
+		localStorage.removeItem("patientData");
 	},
 	methods: {
 		setTable(){ 
@@ -82,7 +83,7 @@ export default {
 		// },
 		patientDetail(patient){
 			this.$router.push({ name: 'patientDetail', params: {data: patient , id:patient.docID}})
-			
+			localStorage.setItem('patientData', JSON.stringify(patient));
 		},
 	},
 	data () {

@@ -47,6 +47,7 @@ export async function getMedicines(medicines) {
           name: medName,
           data: medData,
           option: medOption,
+          text: medName,
           id: docID,
         });
     });
@@ -155,8 +156,23 @@ export async function addNewMedicineData(name, medData, url, option, count){
   // })
 }
 
-export async function updateMedicineData(id, name, data, url, option){
-  const ref = doc(db, "medicine", id);
+// export async function updateMedicineData(id, name, data, url, option){
+//   const ref = doc(db, "medicine", id);
+//   await updateDoc(
+//     ref, 
+//     {
+//       medicineName: name,
+//       data: data,
+//       imageURL: url,
+//       useOption: option,
+//     }
+//   ).then(()=>{
+//     alert("update medicine data success");
+//   })
+// }
+
+export async function updateUserHistory(uid,pid,history){
+  const ref = doc(db, "prescription-1", uid);
   await updateDoc(
     ref, 
     {
@@ -256,6 +272,32 @@ export async function changeLocationToURL(storageLocation, item){
     //     denyButtonText: `Close`,
     //   });  
     // });
+};
+
+export async function createPrescription(prescription){
+  alert(prescription.medicineName);
+  const docRef = await addDoc(collection(db, "prescription-1"), {
+      createTime: prescription.createTime,
+      eyeOption: prescription.eyeOption,
+      imageURL: prescription.imageURL,
+      lastModified: prescription.lastModified,
+      medicineName: prescription.medicineName,
+      medicineNameThai: prescription.medicineNameThai,
+      online: true,
+      pid: prescription.pid,
+      uid: prescription.uid,
+      useOption: prescription.useOption,
+  }).catch((error) => {
+    throw new Error(error);
+  });
+  await updateDoc(doc(db, "prescription-1", docRef.id), {
+    pid: docRef.id,
+  }).catch((error) => {
+    throw new Error(error)
+  });
+  // updateMedicineData
+  alert('Add prescription success Succcess!' + docRef.id);
+  // window.location.reload();
 };
 
 export async function createPatient(name, surname, phoneNO, email, password, dateTime, dname){

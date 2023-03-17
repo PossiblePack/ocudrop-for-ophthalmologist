@@ -15,7 +15,7 @@
                                 :settings="{ width: '100%' }" 
                                 @select="SelectMedEvent($event)"
                                 @change="ChangeMedEvent($event)"
-                                id="medName"
+                                class="medName"
                                 />
                         <label class="form-label">วิธีการหยอด</label>
                         <Select2 
@@ -81,13 +81,13 @@
                                             <span class="mx-2">วิธีการหยอด: {{medicine.eyeOption}}</span>
                                             <span class="mx-2">จำนวนการใช้: {{medicine.useOption}}</span>
                                             <div class="btn-group">
-                                                <button class="action btn-info btn-sm mr-1 ml-1" @click="editMed(medicine)">แก้ไข</button>
-                                                <button class="action btn-danger btn-sm mr-1 ml-1" @click="deleteMed(index)">ลบ</button>
+                                                <!-- <button class="action btn-info btn-sm mr-1 ml-1" @click="editMed(medicine)">แก้ไข</button> -->
+                                                <button class="action btn-danger btn-sm mr-1 ml-1" @click="deleteMed(index,medicine)">ลบ</button>
                                             </div>
                                         </li>
                                         <div class="my-2 d-flex justify-content-center">
                                             <button class="add action mx-2 " @click="callPopup">เพิ่มยา</button>
-                                            <button class="btn bg-success text-white" @click="editMedicineList" :disabled="!isEdited">บันทึกข้อมูล</button>
+                                            <button class="btn bg-success text-white" @click="submitMedicineList" v-if="isEdited">บันทึกข้อมูล</button>
                                         </div>
                                         
                                     </ul>
@@ -114,7 +114,7 @@
 <script>
 
 // import { getlogdroptime, getPrescription, changeLocationToURL } from '../firebase.js'
-import { getMedicines } from '../firebase.js'
+import { getMedicines, createPrescription, updateUserHistory } from '../firebase.js'
 import Popup from '../components/Popup.vue'
 import $ from 'jquery' ;
 export default {
@@ -123,20 +123,22 @@ export default {
         Popup,
     },
     created() {
-        this.medOptions = this.tempMeds
-        this.currentMedicines = []
-        this.currentMedicinesBefore = []
-        // this.currentMedicines = this.$route.params.current;
-        // this.oldMedicines = this.$route.params.old;        
-    },
+        // this.currentMedicines = []
+        // this.currentMedicinesBefore = []
+        this.userID = this.$route.params.id;
+        this.currentMedicines = this.$route.params.current;
+        this.oldMedicines = this.$route.params.old;        
+    },    
     async mounted(){
-        // await getMedicines(this.medicines)
+        await this.getMedicineList()
     },
     data () {
         return {
+            userID: [],
             oldMedicines: [],
             currentMedicines: [],
-            currentMedicinesBefore: [],
+            addedMedicine: [],
+            deletedMedicine: [],
             isShowModal: false,
             modalTitle: "",
             myValue: '',
@@ -150,51 +152,42 @@ export default {
             manualConfig: true,
             medicines: [],
             isEdited: false,
-            tempMeds: [
-                {
-                        medID: 2,
-                        imageURL: "https://firebasestorage.googleapis.com/v0/b/dyeac-8fc86.appspot.com/o/medicineIMG%2FAtropine.JPG?alt=media&token=0d20c082-09d3-412a-a93b-c574dc5361dc",
-                        text: "1% Atropine (Atropine sulfate)",
-                        data: "ยาขยายม่านตา ลดอาการปวดตา ทำให้ตามัวชั่วคราว",
-                        option: [ "วันละ 4 ครั้ง เช้า กลางวัน เย็น ก่อนนอน", "วันละ 2 ครั้ง เช้า เย็น" ],
-                        id: "0wj3x2dgdgaBnQYsdgdHsssaf1ffR",
-                },
-                {
-                        medID: 12,
-                        imageURL: "https://firebasestorage.googleapis.com/v0/b/dyeac-8fc86.appspot.com/o/medicineIMG%2FCombigan.JPG?alt=media&token=64542535-e9a7-4810-8e53-da3dde961fc5",
-                        text: "Combigan (Brimonidine+Timolol)",
-                        data: "ยาต้อหิน ลดความดันตา",
-                        option: ["วันละ 2 ครั้ง เช้า  เย็น"],
-                        id: "0wj3x2yG2BnQYHss1ffR",
-                },
+            // tempMeds: [
+            //     {
+            //             medID: 2,
+            //             imageURL: "https://firebasestorage.googleapis.com/v0/b/dyeac-8fc86.appspot.com/o/medicineIMG%2FAtropine.JPG?alt=media&token=0d20c082-09d3-412a-a93b-c574dc5361dc",
+            //             text: "1% Atropine (Atropine sulfate)",
+            //             data: "ยาขยายม่านตา ลดอาการปวดตา ทำให้ตามัวชั่วคราว",
+            //             option: [ "วันละ 4 ครั้ง เช้า กลางวัน เย็น ก่อนนอน", "วันละ 2 ครั้ง เช้า เย็น" ],
+            //             id: "0wj3x2dgdgaBnQYsdgdHsssaf1ffR",
+            //     },
+            //     {
+            //             medID: 12,
+            //             imageURL: "https://firebasestorage.googleapis.com/v0/b/dyeac-8fc86.appspot.com/o/medicineIMG%2FCombigan.JPG?alt=media&token=64542535-e9a7-4810-8e53-da3dde961fc5",
+            //             text: "Combigan (Brimonidine+Timolol)",
+            //             data: "ยาต้อหิน ลดความดันตา",
+            //             option: ["วันละ 2 ครั้ง เช้า  เย็น"],
+            //             id: "0wj3x2yG2BnQYHss1ffR",
+            //     },
                         
-            ],
+            // ],
         }
     },
     methods: {
-        getMedicineList(medicineList){
-            try{
-                medicineList.forEach(async element => {
-                if(element != undefined){
-                  if(element.online == true){
-                      await this.createMedicineCardList(element);
-                    //   this.medicineList.push(data);
-                    //   console.log(element);
-                  };
-                }
-              });
-            }catch(err){
-                alert("error cause: "+ err);
-            }finally{
-                this.setupSwiper();
+        async getMedicineList(){
+            if (localStorage.getItem("medicineList") === null) {
+                await getMedicines(this.medicines)
+                this.medOptions = this.medicines;
+                localStorage.setItem('medicineList', JSON.stringify(this.medicines));
+                // alert('from firebase')
+            }else{
+                this.medicines = localStorage.getItem('medicineList');
+                this.medOptions = JSON.parse(this.medicines);
+                // alert('from local storage')
             }
         },
         getManualOption(){
             var checkboxes = document.querySelectorAll('.checkbox');
-            // const morning = document.getElementById('sel-morning');
-            // const noon = document.getElementById('sel-noon');
-            // const evening = document.getElementById('sel-evening');
-            // const bedtime = document.getElementById('sel-bedtime');
             const times = document.getElementById('times');
             const period = document.getElementById('period');  
             
@@ -240,6 +233,7 @@ export default {
                 this.presription.createTime = new Date(Date.now());
                 this.presription.lastModified = new Date(Date.now());
                 this.currentMedicines.push(this.presription)
+                this.addedMedicine.push(this.presription)
                 this.close()
                 this.isEdited = true
                 // console.log(this.presription)
@@ -247,35 +241,40 @@ export default {
                 alert(error)
             }
         },
-        editMed(med){
-            this.medOptions.forEach((element) => {
-                if(element.text == med.medicineName){
-                    this.medOptions = [{
-                        medID: element.medID,
-                        imageURL: element.imageURL,
-                        text: element.text,
-                        data: element.data,
-                        option: element.option,
-                        id: element.id,
-                    }]
-                }
-            })
-            $('#medName').append(this.medOptions).trigger('change');
-            this.callPopup()
-            document.getElementById('medImage').src = med.imageURL
-            // alert(med)
+        deleteMed(index,medicine){
+            let text = "คุณแน่ใจไหมว่าต้องการลบยา " + medicine.medicineName + " ออกจากรายการยา " 
+            if (confirm(text) == true) {
+                // text = "You pressed OK!";
+                this.currentMedicines.splice(index,1)
+                this.isEdited = true
+                this.deletedMedicine.push(medicine.pid);
+            } else {
+                // text = "You canceled!";
+            }
+            
         },
-        deleteMed(index){
-            this.currentMedicines.splice(index,1)
-        },
-        editMedicineList(e){
+        async submitMedicineList(e){
             e.preventDefault();
-            alert("submit")
+            try{
+                if(this.addedMedicine.length!=0){
+                    this.addedMedicine.forEach( async (element) =>  await createPrescription(element))
+                }
+                if(this.deletedMedicine.length!=0){
+                    // await createPrescription(this.addedMedicine[0]);
+                }
+            }catch(error){
+                alert(error)
+            }
+            // alert("submit")
         },
         close(){
             this.isShowModal = false
         },
         callPopup() {
+             $("#medName").select2({
+                placeholder: "Select a state",
+                allowClear: true
+            });
             this.isShowModal = true
         },
         myChangeEvent(val){
@@ -299,7 +298,7 @@ export default {
                 medicineNameThai: data,
                 online: true,
                 pid: "",
-                uid: "",
+                uid: this.userID,
                 useOption: "",
             }
             this.optionList = option;

@@ -67,6 +67,8 @@ export default {
 		await getMedicines(this.medicines).then( () => {
 			setTimeout(()=> {
         	    this.setTable()
+				localStorage.setItem('medicineList', JSON.stringify(this.medicines));
+				// console.log(JSON.stringify(this.medicines))
         	},800);
 		})
 	},
