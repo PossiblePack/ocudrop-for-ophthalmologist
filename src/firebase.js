@@ -4,6 +4,7 @@ import { firebase, initializeApp, applicationDefault, cert } from 'firebase/app'
 import { query, where, updateDoc, addDoc, collection, getDocs, getDoc, getFirestore, deleteDoc, doc } from "firebase/firestore";
 import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL} from "firebase/storage"
 import $ from 'jquery' ;
+import exp from 'constants';
 
 // Dyeac-Dev
 const firebaseConfig = {
@@ -156,23 +157,8 @@ export async function addNewMedicineData(name, medData, url, option, count){
   // })
 }
 
-// export async function updateMedicineData(id, name, data, url, option){
-//   const ref = doc(db, "medicine", id);
-//   await updateDoc(
-//     ref, 
-//     {
-//       medicineName: name,
-//       data: data,
-//       imageURL: url,
-//       useOption: option,
-//     }
-//   ).then(()=>{
-//     alert("update medicine data success");
-//   })
-// }
-
-export async function updateUserHistory(uid,pid,history){
-  const ref = doc(db, "prescription-1", uid);
+export async function updateMedicineData(id, name, data, url, option){
+  const ref = doc(db, "medicine", id);
   await updateDoc(
     ref, 
     {
@@ -183,6 +169,32 @@ export async function updateUserHistory(uid,pid,history){
     }
   ).then(()=>{
     alert("update medicine data success");
+  })
+}
+
+export async function updateUserHistory(uid, history){
+  const ref = doc(db, "user-1", uid);
+  console.log(history)
+  await updateDoc(
+    ref, 
+    {
+      history: history,
+    }
+  ).then(()=>{
+    alert("update user history data success");
+  })
+}
+
+export async function disableMedicine(pid){
+  const ref = doc(db, "prescription-1", pid);
+  // console.log(history)
+  await updateDoc(
+    ref, 
+    {
+      online: false,
+    }
+  ).then(()=>{
+    alert("disable medicine is success");
   })
 }
 
@@ -199,10 +211,10 @@ export async function deleteMedicine(id){
 }
 
 export async function deletePatient(id){
-  if (confirm("Do you want to delete! medicine: " + id) == true) {
+  if (confirm("Do you want to delete! patient: " + id) == true) {
     // OK
     await deleteDoc(doc(db, "user-1", id));
-    alert("Delete medicine success!");
+    alert("Delete patient success!");
     window.location.reload();
   } else {
     // canceled!
@@ -274,30 +286,33 @@ export async function changeLocationToURL(storageLocation, item){
     // });
 };
 
-export async function createPrescription(prescription){
-  alert(prescription.medicineName);
-  const docRef = await addDoc(collection(db, "prescription-1"), {
-      createTime: prescription.createTime,
-      eyeOption: prescription.eyeOption,
-      imageURL: prescription.imageURL,
-      lastModified: prescription.lastModified,
-      medicineName: prescription.medicineName,
-      medicineNameThai: prescription.medicineNameThai,
-      online: true,
-      pid: prescription.pid,
-      uid: prescription.uid,
-      useOption: prescription.useOption,
-  }).catch((error) => {
-    throw new Error(error);
-  });
-  await updateDoc(doc(db, "prescription-1", docRef.id), {
-    pid: docRef.id,
-  }).catch((error) => {
+export async function createPrescription(prescriptions,history){
+  let userID = prescriptions[0].uid
+  try {
+    prescriptions.forEach( async (prescription) =>  {
+      // console.log(prescription.pid)
+      const docRef = await addDoc(collection(db, "prescription-1"), {
+          createTime: prescription.createTime,
+          eyeOption: prescription.eyeOption,
+          imageURL: prescription.imageURL,
+          lastModified: prescription.lastModified,
+          medicineName: prescription.medicineName,
+          medicineNameThai: prescription.medicineNameThai,
+          online: true,
+          pid: prescription.pid,
+          uid: prescription.uid,
+          useOption: prescription.useOption,
+        });
+        history.push(docRef.id)
+        await updateDoc(doc(db, "prescription-1", docRef.id), {
+            pid: docRef.id,
+        });
+        await updateUserHistory(userID, history)
+    })
+    // alert('Add medicine to prescription Succcess!' + history);
+  } catch (error) {
     throw new Error(error)
-  });
-  // updateMedicineData
-  alert('Add prescription success Succcess!' + docRef.id);
-  // window.location.reload();
+  }
 };
 
 export async function createPatient(name, surname, phoneNO, email, password, dateTime, dname){

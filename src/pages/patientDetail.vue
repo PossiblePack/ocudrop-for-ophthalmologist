@@ -23,6 +23,7 @@
                                 <span class="form-label">อีเมล: </span>
                                 <span id="email" >{{patientData.email}}</span>
                             </div>
+                            <!-- <button @click="action(patientData.history)">Action</button> -->
                             <!-- <div class="mb-2">
                                 <span class="form-label">แพทย์ผู้ดูแล: </span>
                                 <span id="doctor" >{{patientData.doctor}}</span>
@@ -94,13 +95,11 @@ export default {
     name: "PatientDetail",
     async created(){
         try{
-            this.patientData = this.$route.params.data;
-            if(this.patientData.history.length == 0){
-            // alert("no medicine");
-            }else{
+            this.getPatientData()
+            if(this.patientData.history.length !== 0){
                 this.haveMedicine = true;
                 await this.getMedicineList(this.patientData.history, this.medicineList)
-            };
+            }
         }
         catch(err){
             alert("error cause: " + err)
@@ -126,6 +125,13 @@ export default {
         setTable(){ 
           $('#logdropdata').DataTable({
           })
+        },
+        getPatientData(){
+            if(this.$route.params.data == null){
+                this.patientData = JSON.parse(localStorage.getItem('patientData'));
+            }else{
+                this.patientData = this.$route.params.data;
+            }
         },
         setupSwiper(){
             var swiper = new Swiper(".mySwiper", {

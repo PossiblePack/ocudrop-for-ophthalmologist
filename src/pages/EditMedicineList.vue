@@ -11,7 +11,7 @@
                         <label class="form-label">ชื่อยา</label>
                         <Select2 
                                 v-model="presription" 
-                                :options="medOptions" 
+                                :options="medicines" 
                                 :settings="{ width: '100%' }" 
                                 @select="SelectMedEvent($event)"
                                 @change="ChangeMedEvent($event)"
@@ -114,7 +114,7 @@
 <script>
 
 // import { getlogdroptime, getPrescription, changeLocationToURL } from '../firebase.js'
-import { getMedicines, createPrescription, updateUserHistory } from '../firebase.js'
+import { getMedicines, createPrescription, disableMedicine } from '../firebase.js'
 import Popup from '../components/Popup.vue'
 import $ from 'jquery' ;
 export default {
@@ -123,14 +123,13 @@ export default {
         Popup,
     },
     created() {
-        // this.currentMedicines = []
-        // this.currentMedicinesBefore = []
         this.userID = this.$route.params.id;
         this.currentMedicines = this.$route.params.current;
         this.oldMedicines = this.$route.params.old;        
     },    
     async mounted(){
         await this.getMedicineList()
+        this.history = JSON.parse(localStorage.getItem('patientData')).history;
     },
     data () {
         return {
@@ -140,49 +139,25 @@ export default {
             addedMedicine: [],
             deletedMedicine: [],
             isShowModal: false,
-            modalTitle: "",
-            myValue: '',
             eyeOptions: ["ตาทั้ง 2 ข้าง","ตาข้างซ้าย","ตาข้างขวา"],
-            medOptions: [],
-            medOptionsBefore: [],
             presription: [],
             optionList: [],
             eyeSelect: "",
             optionSelect: "",
             manualConfig: true,
             medicines: [],
+            history: [],
             isEdited: false,
-            // tempMeds: [
-            //     {
-            //             medID: 2,
-            //             imageURL: "https://firebasestorage.googleapis.com/v0/b/dyeac-8fc86.appspot.com/o/medicineIMG%2FAtropine.JPG?alt=media&token=0d20c082-09d3-412a-a93b-c574dc5361dc",
-            //             text: "1% Atropine (Atropine sulfate)",
-            //             data: "ยาขยายม่านตา ลดอาการปวดตา ทำให้ตามัวชั่วคราว",
-            //             option: [ "วันละ 4 ครั้ง เช้า กลางวัน เย็น ก่อนนอน", "วันละ 2 ครั้ง เช้า เย็น" ],
-            //             id: "0wj3x2dgdgaBnQYsdgdHsssaf1ffR",
-            //     },
-            //     {
-            //             medID: 12,
-            //             imageURL: "https://firebasestorage.googleapis.com/v0/b/dyeac-8fc86.appspot.com/o/medicineIMG%2FCombigan.JPG?alt=media&token=64542535-e9a7-4810-8e53-da3dde961fc5",
-            //             text: "Combigan (Brimonidine+Timolol)",
-            //             data: "ยาต้อหิน ลดความดันตา",
-            //             option: ["วันละ 2 ครั้ง เช้า  เย็น"],
-            //             id: "0wj3x2yG2BnQYHss1ffR",
-            //     },
-                        
-            // ],
         }
     },
     methods: {
         async getMedicineList(){
             if (localStorage.getItem("medicineList") === null) {
                 await getMedicines(this.medicines)
-                this.medOptions = this.medicines;
                 localStorage.setItem('medicineList', JSON.stringify(this.medicines));
                 // alert('from firebase')
             }else{
-                this.medicines = localStorage.getItem('medicineList');
-                this.medOptions = JSON.parse(this.medicines);
+                this.medicines = JSON.parse(localStorage.getItem('medicineList'));
                 // alert('from local storage')
             }
         },
@@ -247,25 +222,38 @@ export default {
                 // text = "You pressed OK!";
                 this.currentMedicines.splice(index,1)
                 this.isEdited = true
-                this.deletedMedicine.push(medicine.pid);
+                this.deletedMedicine.push(medicine);
             } else {
                 // text = "You canceled!";
             }
-            
         },
         async submitMedicineList(e){
             e.preventDefault();
             try{
-                if(this.addedMedicine.length!=0){
-                    this.addedMedicine.forEach( async (element) =>  await createPrescription(element))
-                }
                 if(this.deletedMedicine.length!=0){
-                    // await createPrescription(this.addedMedicine[0]);
+                    this.deletedMedicine.forEach( (element) =>  {
+                        if(this.addedMedicine.length>0){
+                            if(this.addedMedicine.includes(element)){
+                                // alert('delete added medicine name' + element.medicineName)
+                                var index = this.addedMedicine.indexOf(element)
+                                this.addedMedicine.splice(index,1)
+                            }else{
+                                disableMedicine(element.pid)
+                            }
+                        }else{
+                            disableMedicine(element.pid)
+                        }
+                    })
+                }
+                if(this.addedMedicine.length!=0){
+                    await createPrescription(this.addedMedicine,this.history)
                 }
             }catch(error){
                 alert(error)
+            } finally {
+                // alert("แก้ไขรายการยาสำเร็จแล้ว")
+                // this.$router.push({ name: 'Patient'})
             }
-            // alert("submit")
         },
         close(){
             this.isShowModal = false
