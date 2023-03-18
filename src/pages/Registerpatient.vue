@@ -31,15 +31,16 @@
                                     <label class="form-label">ยืนยันรหัสผ่าน</label>
                                     <input class="form-control" type="password" id="repassword" placeholder="กรุณาป้อนรหัสผ่าน" >
                                 </div>
-                                <br>
+                                <!-- <br> -->
                                 <div class="col-6">
                                     <label class="form-label d-flex justify-content-start">แพทย์ผู้ดูแล</label>
                                     <input class="form-control disabled" type="text" id="doctorname" required readonly>
                                 </div>
-                                <div class="col-6">
-                                </div>
-                                <div class="mt-4">
+                                <!-- <div class="col-6">
+                                </div> -->
+                                <div class="mt-4 d-flex justify-content-center col-12">
                                     <button type="submit" class="btn bg-success text-white"  >บันทึกข้อมูล</button>
+                                    <!-- <button class="btn bg-success text-white" @click="hashPassword">hash password</button> -->
                                 </div>
                             </div>
                     </form>
@@ -52,7 +53,7 @@
 
 <script>
 import { createPatient } from '../firebase.js'
-
+import { sha256 } from 'js-sha256';
 
 export default {
     name: "RegisterPatient",
@@ -68,13 +69,43 @@ export default {
             const dname = document.getElementById('doctorname').value;
             const dateTime = new Date(Date.now());
 
-            if(password == repassword){
-                await createPatient(name, surname, phoneNO, email, password, dateTime, dname)
-            }else{
-                alert("password mismatch");
+            try{
+                if(password == repassword){
+                    const hashPassword = this.hashPassword(password);
+                    // alert(hashPassword)
+                    await createPatient(name, surname, phoneNO, email, hashPassword, dateTime, dname)
+                }else{
+                    alert("password mismatch");
+                }
+            }catch(error){
+                alert(error)
             }
-            // alert(name + " " + surname + " " + phoneNO + " " + email + " " + password + " " + repassword);
         },
+        hashPassword(password){
+            // const password = document.getElementById('password').value;
+            var salt = 'ophthalmic_patient'
+            var saltpass = salt+password;
+            // console.log(saltpass)
+            
+            var enbytes = new TextEncoder().encode(saltpass);
+            // console.log(enbytes)
+            var hash = sha256.update(enbytes).toString();
+            for (let i = 0; i < 411; i++) {
+                enbytes = new TextEncoder().encode(hash);
+                hash = sha256.update(enbytes).toString();
+                // console.log(hash)
+            }
+            return hash.toString()
+        },
+        // decryptPassword(){
+        //     // var debytes = new TextDecoder("utf-8").decode(enbytes);
+        //     // for (let i = 0; i < 411; i++) {
+        //     //     debytes = new TextEncoder("utf-8").decode(hash);
+        //     //     hash = sha256.update(debytes).toString();
+        //     //     // console.log(hash)
+        //     // }
+        //     // console.log(hash.toString())
+        // }
     },
 }
 </script>

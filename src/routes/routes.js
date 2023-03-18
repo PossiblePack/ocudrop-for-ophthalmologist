@@ -29,11 +29,26 @@ const routes = [
     component: DashboardLayout,
     redirect: '/admin/overview',
     children: [
+      // {
+      //   path: 'overview',
+      //   name: 'dashboard',
+      //   component: Overview
+      // },
       {
-        path: 'overview',
-        name: 'dashboard',
-        component: Overview
-      },
+        path: '/patient/:id', 
+        name: 'patientDetail', 
+        component: patientDetail 
+      }, 
+      {
+        path: 'patient', 
+        name: 'Patient', 
+        component: Patient 
+      }, 
+      {
+        path: 'registerpatient', 
+        name: 'RegisterPatient', 
+        component: RegisterPatient 
+      }, 
       {
         path: 'medicine', 
         name: 'Medicine', 
@@ -53,21 +68,6 @@ const routes = [
         path: '/medicineList/:id', 
         name: 'editMedicineList', 
         component: EditMedicineList 
-      }, 
-      {
-        path: '/patient/:id', 
-        name: 'patientDetail', 
-        component: patientDetail 
-      }, 
-      {
-        path: 'patient', 
-        name: 'Patient', 
-        component: Patient 
-      }, 
-      {
-        path: 'registerpatient', 
-        name: 'RegisterPatient', 
-        component: RegisterPatient 
       }, 
       {
         path: 'user',

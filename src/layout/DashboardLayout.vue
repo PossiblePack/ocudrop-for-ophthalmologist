@@ -2,17 +2,17 @@
   <div class="wrapper">
     <side-bar>
       <mobile-menu slot="content"></mobile-menu>
-      <sidebar-link to="/admin/overview">
+      <!-- <sidebar-link to="/admin/overview">
         <i class="nc-icon nc-chart-pie-35"></i>
         <p>แดชบอร์ด</p>
+      </sidebar-link> -->
+       <sidebar-link to="/admin/patient">
+        <i class="nc-icon nc-notes"></i>
+        <p>ข้อมูลผู้ป่วย</p>
       </sidebar-link>
       <sidebar-link to="/admin/medicine">
         <i class="nc-icon nc-notes"></i>
         <p>ข้อมูลยา</p>
-      </sidebar-link>
-      <sidebar-link to="/admin/patient">
-        <i class="nc-icon nc-notes"></i>
-        <p>ข้อมูลผู้ป่วย</p>
       </sidebar-link>
       <sidebar-link to="/admin/registerpatient">
         <i class="nc-icon nc-single-02"></i>
@@ -21,10 +21,6 @@
       <!-- <sidebar-link to="/admin/user">
         <i class="nc-icon nc-circle-09"></i>
         <p>User Profile</p>
-      </sidebar-link>
-      <sidebar-link to="/admin/icons">
-        <i class="nc-icon nc-atom"></i>
-        <p>Icons</p>
       </sidebar-link>
       <sidebar-link to="/admin/maps">
         <i class="nc-icon nc-pin-3"></i>
@@ -35,13 +31,13 @@
         <p>Notifications</p>
       </sidebar-link> -->
       
-      <!-- <template slot="bottom-links">
-        <sidebar-link class="active"
-                      to="/admin/upgrade">
-          <i class="nc-icon nc-alien-33"></i>
-          <p>Upgrade to PRO</p>
-        </sidebar-link>
-      </template> -->
+      <template slot="bottom-links">
+        <div class="d-flex justify-content-start">
+          <button class="btn w-100 rounded text-white" @click="logout">
+            <i class="nc-icon nc-lock-circle-open icon-bold mx-1"></i>ออกจากระบบ
+          </button>
+        </div>
+      </template>
     </side-bar>
     <div class="main-panel">
       <top-navbar></top-navbar>
@@ -74,6 +70,9 @@
         if (this.$sidebar.showSidebar) {
           this.$sidebar.displaySidebar(false)
         }
+      },
+      logout(){
+        alert("log out")
       }
     }
   }

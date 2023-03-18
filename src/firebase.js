@@ -328,40 +328,13 @@ export async function createPatient(name, surname, phoneNO, email, password, dat
       doctorname: dname,
       history: arr,
   }).catch((error) => {
-    // Swal.fire({
-    //   icon: 'error',
-    //   title: 'Oops...!',
-    //   text: "Something went wrong because: "+ error,
-    //   showConfirmButton: false,
-    //   showDenyButton: true,
-    //   denyButtonText: `Close`,
-    // });  
-    alert(error);
+    throw new Error(error);
   });
   await updateDoc(doc(db, "user-1", docRef.id), {
     uid: docRef.id,
   }).catch((error) => {
-    // Swal.fire({
-    //   icon: 'error',
-    //   title: 'Oops...!',
-    //   text: "Something went wrong because: "+ error,
-    //   showConfirmButton: false,
-    //   showDenyButton: true,
-    //   denyButtonText: `Close`,
-    // });  
-    alert(error)
+    throw new Error(error)
   });
-  // Swal.fire({
-  //     icon: 'success',
-  //     title: 'Add patient Succcess!',
-  //     text: 'Add new patient is done',
-  //     showConfirmButton: true,
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //         window.location.reload();
-  //     }
-  // })
-
   alert('Add patient Succcess!' + docRef.id);
   window.location.reload();
 };

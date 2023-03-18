@@ -98,7 +98,7 @@ export default {
             this.getPatientData()
             if(this.patientData.history.length !== 0){
                 this.haveMedicine = true;
-                await this.getMedicineList(this.patientData.history, this.medicineList)
+                this.getMedicineList(this.patientData.history, this.medicineList)
             }
         }
         catch(err){
@@ -109,8 +109,7 @@ export default {
         this.setTable(); 
         setTimeout(()=> {
             this.setupSwiper();
-        },800);
-        
+        },1000);
     },
     data () {
         return {
