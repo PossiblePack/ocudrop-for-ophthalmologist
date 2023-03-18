@@ -36,6 +36,7 @@ import "./registerServiceWorker";
 // plugin setup
 Vue.use(VueRouter);
 Vue.use(LightBootstrap);
+// Vue.component()
 
 
 // configure router
