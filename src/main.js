@@ -31,6 +31,7 @@ import "datatables.net-bs5/css/dataTables.bootstrap5.min.css"
 import "jszip"
 import "pdfmake"
 import "datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css"
+import {onAuthStateChanged } from "firebase/auth";
 
 import "./registerServiceWorker";
 // plugin setup
@@ -58,3 +59,4 @@ new Vue({
   render: (h) => h(App),
   router,
 });
+
