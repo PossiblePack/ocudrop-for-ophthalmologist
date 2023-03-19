@@ -23,11 +23,6 @@
                                 <span class="form-label">อีเมล: </span>
                                 <span id="email" >{{patientData.email}}</span>
                             </div>
-                            <!-- <button @click="action(patientData.history)">Action</button> -->
-                            <!-- <div class="mb-2">
-                                <span class="form-label">แพทย์ผู้ดูแล: </span>
-                                <span id="doctor" >{{patientData.doctor}}</span>
-                            </div> -->
                             <h4  class="mb-2 mt-5" id="medLabel" v-if="haveMedicine">ยาที่ใช้อยู่</h4>
                             <h4 class="mb-2 mt-5" v-else>ยังไม่ได้จ่ายยา <button class="btn btn-link" @click="this.editMedicineList">เพิ่มยา</button></h4>
                             <div v-if="haveMedicine">
@@ -48,12 +43,18 @@
                                             <tr>
                                                 <th class="text-white">วันที่หยอด</th>
                                                 <th class="text-white">เวลาที่หยอด</th>
-                                                <th class="text-white">ชื่อยา</th>  
+                                                <!-- <th class="text-white">ชื่อยา</th>   -->
                                                 <th class="text-white">เวลาที่ตั้งแจ้งเตือน</th>
-                                                <th class="text-white">หมายเหตุ</th>
+                                                <th class="text-white w-100">หมายเหตุ</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="t_logdropbody"></tbody>
+                                        <tbody v-for=" logdrop in  this.logdrops" :key="logdrop.index">
+                                            <td >{{logdrop.date}}</td>
+								            <td >{{logdrop.time}}</td>
+								            <!-- <td >{{logdrop.pid}}</td> -->
+                                            <td >{{logdrop.scheduleTime}}</td>
+                                            <td >{{logdrop.mark}}</td>
+                                        </tbody>
                                     </table>
                                     <table  id="dropOption" class="mt-5 table table-bordered display justify-content-center" >
                                         <thead class="bg-primary">
@@ -89,7 +90,7 @@ import Swiper from 'swiper';
 // Import Swiper styles
 import 'swiper/swiper.min.css'
 
-import { getlogdroptime, getPrescription, changeLocationToURL } from '../firebase.js'
+import { getlogdroptimes, getPrescription, changeLocationToURL } from '../firebase.js'
 
 export default {
     name: "PatientDetail",
@@ -99,6 +100,8 @@ export default {
             if(this.patientData.history.length !== 0){
                 this.haveMedicine = true;
                 this.getMedicineList(this.patientData.history, this.medicineList)
+                this.logdrops = await getlogdroptimes(this.patientData.history, this.logdrops)
+                // this.setTable()
             }
         }
         catch(err){
@@ -106,10 +109,10 @@ export default {
         }
     },
     async mounted(){
-        this.setTable(); 
         setTimeout(()=> {
             this.setupSwiper();
-        },1000);
+        },2000);
+        
     },
     data () {
         return {
@@ -118,12 +121,33 @@ export default {
             oldMedicine: [],
             logdrops: [],
             haveMedicine: false,
+            notiCount: 0, 
+            withoutnotiCount: 0,
+            other: 0,
         }
     },
     methods: {
         setTable(){ 
           $('#logdropdata').DataTable({
+            autoWidth: false,
+            "columns": [
+                { "width": "25%" , "height": "100%"},
+                { "width": "25%" , "height": "100%"},
+                { "width": "25%" , "height": "100%"},
+                { "width": "25%" , "height": "100%"},
+            ]
           })
+        },
+        getLogdropOption(logdrops){
+            logdrops.array.forEach(element => {
+                if(element.mark == "complete"){
+                  this.notiCount+=1;
+                }else if(element.mark == "complete (without notification)"){
+                  this.withoutnotiCount+=1;
+                }else{
+                  this.other+=1;
+                }
+            });
         },
         getPatientData(){
             if(this.$route.params.data == null){

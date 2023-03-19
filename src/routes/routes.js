@@ -16,89 +16,74 @@ import Icons from 'src/pages/Icons.vue'
 import Maps from 'src/pages/Maps.vue'
 import Notifications from 'src/pages/Notifications.vue'
 import Upgrade from 'src/pages/Upgrade.vue'
+import Login from 'src/pages/Login.vue'
 
 
 const routes = [
   {
     path: '/',
-    component: DashboardLayout,
-    redirect: '/admin/overview'
+    component: Login,
+    redirect: '/admin/login'
   },
   {
     path: '/admin',
     component: DashboardLayout,
-    redirect: '/admin/overview',
+    redirect: '/admin/patient',
     children: [
-      // {
-      //   path: 'overview',
-      //   name: 'dashboard',
-      //   component: Overview
-      // },
       {
         path: '/patient/:id', 
         name: 'patientDetail', 
-        component: patientDetail 
+        component: patientDetail, 
+        meta: {auth: true}
       }, 
       {
         path: 'patient', 
         name: 'Patient', 
-        component: Patient 
+        component: Patient,
+        meta: {auth: true}
       }, 
       {
         path: 'registerpatient', 
         name: 'RegisterPatient', 
-        component: RegisterPatient 
+        component: RegisterPatient ,
+        meta: {auth: true}
       }, 
       {
         path: 'medicine', 
         name: 'Medicine', 
-        component: Medicine 
+        component: Medicine,
+        meta: {auth: true}
       },
       {
         path: 'addmedicine', 
         name: 'AddMedicine', 
-        component: AddMedicine 
+        component: AddMedicine,
+        meta: {auth: true}
       },
       {
         path: '/medicine/:id', 
         name: 'editMedicine', 
-        component: EditMedicine 
+        component: EditMedicine,
+        meta: {auth: true}
       }, 
       {
         path: '/medicineList/:id', 
         name: 'editMedicineList', 
-        component: EditMedicineList 
+        component: EditMedicineList,
+        meta: {auth: true}
       }, 
       {
-        path: 'user',
-        name: 'User',
-        component: UserProfile
-      },
-      {
-        path: 'icons',
-        name: 'Icons',
-        component: Icons
-      },
-      {
-        path: 'maps',
-        name: 'Maps',
-        component: Maps
-      },
-      {
-        path: 'notifications',
-        name: 'Notifications',
-        component: Notifications
-      },
-      {
-        path: 'upgrade',
-        name: 'Upgrade to PRO',
-        component: Upgrade
+        path: 'login',
+        name: 'Login',
+        component: Login,
+        meta: {auth: false}
       },
       
     ]
   },
   { path: '*', component: NotFound }
 ]
+
 
 /**
  * Asynchronously load view (Webpack Lazy loading compatible)

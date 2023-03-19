@@ -3,8 +3,7 @@ import { onUnmounted, ref } from 'vue';
 import { firebase, initializeApp, applicationDefault, cert } from 'firebase/app';
 import { query, where, updateDoc, addDoc, collection, getDocs, getDoc, getFirestore, deleteDoc, doc } from "firebase/firestore";
 import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL} from "firebase/storage"
-import $ from 'jquery' ;
-import exp from 'constants';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
 // Dyeac-Dev
 const firebaseConfig = {
@@ -222,34 +221,6 @@ export async function deletePatient(id){
   // return 
 }
 
-export async function getlogdroptime(id, logDropData){
-  var notiCount = 0;
-  var withoutnotiCount = 0;
-  var other = 0;
-  id.forEach(async function (value) {
-    let q = query(collection(db, "logdroptime-1"), where("pid", "==", value))
-    let docSnap = await getDocs(q);
-    // console.log(docSnap);
-    docSnap.forEach((doc) => {
-      var dateTime = new Date(doc.data().timestamp.seconds * 1000);
-      var time = dateTime.getHours()+ ":" +dateTime.getMinutes();
-      var scheduleTime = "";
-      if( doc.data().scheduleTime != undefined){
-        var scheduleTime = doc.data().scheduleTime
-      };
-      if(doc.data().button == "complete"){
-        notiCount++;
-      }else if(doc.data().button == "complete (without notification)"){
-        withoutnotiCount++;
-      }else{
-        other++;
-      }
-      logDropData.push({
-      });
-    });
-  });
-}; 
-
 export async function getPrescription(id){
   const docRef = doc(db, "prescription-1", id);
   const docSnap = await getDoc(docRef);
@@ -338,3 +309,56 @@ export async function createPatient(name, surname, phoneNO, email, password, dat
   alert('Add patient Succcess!' + docRef.id);
   window.location.reload();
 };
+
+export async function login(email,password){
+  const auth = getAuth();
+  signInWithEmailAndPassword(auth, email, password)
+    .then(async (userCredential) => {
+      const user = userCredential.user;
+      localStorage.setItem('UID', user.uid);
+      localStorage.setItem('Email', email);
+      localStorage.setItem('Password', password);
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      throw new Error(errorMessage);
+  });
+}
+
+// async function getMedcineName(id){
+//   let q = query(collection(db, "prescription-1"), where("pid", "==", id))
+//   let docSnap = await getDocs(q);
+//   var medName = ""
+//   docSnap.forEach((doc) => {
+//     medName = doc.data().medicineName;
+//   });
+//   console.log(medName);
+//   return medName;
+// }; 
+
+export async function getlogdroptimes(history,logdrops){
+  history.forEach(async function (value) {
+    let q = query(collection(db, "logdroptime-1"), where("pid", "==", value))
+    let docSnap = await getDocs(q);
+    docSnap.forEach(async (doc)  => {
+      var dateTime = new Date(doc.data().timestamp.seconds * 1000);
+      var realdate = dateTime.getDate()+ "/"+(dateTime.getMonth()+1)+ "/"+dateTime.getFullYear();
+      var realtime = dateTime.getHours()+ ":"+ (dateTime.getMinutes()<10 ? "0"+dateTime.getMinutes() : dateTime.getMinutes());
+      // var time = dateTime.getHours()+ ":" +dateTime.getMinutes();
+      // var scheduleTime = "";
+      if( doc.data().scheduleTime != undefined){
+        var scheduleTime = doc.data().scheduleTime
+      };
+      logdrops.push({
+        date: realdate, 
+        name: name,
+        time: realtime, 
+        pid: doc.data().pid, 
+        scheduleTime: scheduleTime, 
+        mark: doc.data().button, 
+      });
+    });
+  });
+  return logdrops
+} 

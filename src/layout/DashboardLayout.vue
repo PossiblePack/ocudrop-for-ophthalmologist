@@ -18,18 +18,6 @@
         <i class="nc-icon nc-single-02"></i>
         <p>ลงทะเบียนผู้ป่วยใหม่</p>
       </sidebar-link>
-      <!-- <sidebar-link to="/admin/user">
-        <i class="nc-icon nc-circle-09"></i>
-        <p>User Profile</p>
-      </sidebar-link>
-      <sidebar-link to="/admin/maps">
-        <i class="nc-icon nc-pin-3"></i>
-        <p>Maps</p>
-      </sidebar-link>
-      <sidebar-link to="/admin/notifications">
-        <i class="nc-icon nc-bell-55"></i>
-        <p>Notifications</p>
-      </sidebar-link> -->
       
       <template slot="bottom-links">
         <div class="d-flex justify-content-start">
@@ -40,7 +28,7 @@
       </template>
     </side-bar>
     <div class="main-panel">
-      <top-navbar></top-navbar>
+      <top-navbar ></top-navbar>
 
       <dashboard-content @click="toggleSidebar">
 
@@ -63,7 +51,7 @@
       TopNavbar,
       ContentFooter,
       DashboardContent,
-      MobileMenu
+      // MobileMenu
     },
     methods: {
       toggleSidebar () {
@@ -72,7 +60,9 @@
         }
       },
       logout(){
-        alert("log out")
+        // alert("log out")
+        this.$sidebar.displaySidebar(false)
+        this.$router.push({ name: 'Login'})
       }
     }
   }
