@@ -51,25 +51,8 @@
                                         <tbody v-for=" logdrop in  this.logdrops" :key="logdrop.index">
                                             <td >{{logdrop.date}}</td>
 								            <td >{{logdrop.time}}</td>
-								            <!-- <td >{{logdrop.pid}}</td> -->
                                             <td >{{logdrop.scheduleTime}}</td>
-                                            <td >{{logdrop.mark}}</td>
-                                        </tbody>
-                                    </table>
-                                    <table  id="dropOption" class="mt-5 table table-bordered display justify-content-center" >
-                                        <thead class="bg-primary">
-                                            <tr>
-                                                <th class="text-white" style="width: 33%;">หยอดตาตามแจ้งเตือน</th>
-                                                <th class="text-white" style="width: 33%;">หยอดตาโดยไม่ผ่านการแจ้งเตือน</th>  
-                                                <th class="text-white" >เลื่อนเวลาหยอด</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <th id="dropwithnoti"></th>
-                                                <th id="dropwithoutnoti"></th>  
-                                                <th id="dropwithother"></th>
-                                            </tr>
+                                            <td style="width: 100%">{{logdrop.mark}}</td>
                                         </tbody>
                                     </table>
                                 </div>
@@ -100,12 +83,17 @@ export default {
             if(this.patientData.history.length !== 0){
                 this.haveMedicine = true;
                 this.getMedicineList(this.patientData.history, this.medicineList)
-                this.logdrops = await getlogdroptimes(this.patientData.history, this.logdrops)
-                // this.setTable()
+                this.logdrops = await this.getlogdropList();
+                // this.setTable(logdropdata)
             }
         }
         catch(err){
-            alert("error cause: " + err)
+            // alert("error cause: " + err)
+            Swal.fire({
+                icon: 'error',
+                title: 'มีปัญหาในการโหลดข้อมูลผู้ป่วย',
+                text: err,
+            })
         }
     },
     async mounted(){
@@ -127,27 +115,28 @@ export default {
         }
     },
     methods: {
-        setTable(){ 
-          $('#logdropdata').DataTable({
-            autoWidth: false,
-            "columns": [
-                { "width": "25%" , "height": "100%"},
-                { "width": "25%" , "height": "100%"},
-                { "width": "25%" , "height": "100%"},
-                { "width": "25%" , "height": "100%"},
-            ]
-          })
+        async getlogdropList () {
+            return new Promise((resolve, rejects) => {
+                return setTimeout(() => resolve(getlogdroptimes(this.patientData.history, this.logdrops)), 1000) ;
+            })
+        },
+        setTable(logdropdata){ 
+          var table = $('#logdropdata').DataTable({});
         },
         getLogdropOption(logdrops){
-            logdrops.array.forEach(element => {
-                if(element.mark == "complete"){
-                  this.notiCount+=1;
-                }else if(element.mark == "complete (without notification)"){
-                  this.withoutnotiCount+=1;
-                }else{
-                  this.other+=1;
-                }
-            });
+            console.log(logdrops);
+            // if(logdrops.length!==0){
+            //     logdrops.forEach(element => {
+            //     if(element.mark == "complete"){
+            //       this.notiCount+=1;
+            //       console.log(this.notiCount)
+            //     }else if(element.mark == "complete (without notification)"){
+            //       this.withoutnotiCount+=1;
+            //     }else{
+            //       this.other+=1;
+            //     }
+            // });
+            // }
         },
         getPatientData(){
             if(this.$route.params.data == null){
@@ -184,7 +173,12 @@ export default {
                 }
               });
             }catch(err){
-                alert("error cause: "+ err);
+                // alert("error cause: "+ err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'มีปัญหาในโหลดข้อมูลรายการยา',
+                    text: err,
+                })
             }finally{
                 this.setupSwiper();
             }

@@ -22,8 +22,8 @@ import Login from 'src/pages/Login.vue'
 const routes = [
   {
     path: '/',
-    component: Login,
-    redirect: '/admin/login'
+    component: Patient,
+    redirect: '/admin/patient'
   },
   {
     path: '/admin',

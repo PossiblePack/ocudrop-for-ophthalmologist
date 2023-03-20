@@ -1,31 +1,32 @@
 import { onUnmounted, ref } from 'vue';
+import Swal from 'sweetalert2'
 
 import { firebase, initializeApp, applicationDefault, cert } from 'firebase/app';
 import { query, where, updateDoc, addDoc, collection, getDocs, getDoc, getFirestore, deleteDoc, doc } from "firebase/firestore";
 import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL} from "firebase/storage"
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
-// Dyeac-Dev
-const firebaseConfig = {
-  apiKey: "AIzaSyD3cuKqdUz7--QTLZ7gZNOrAvRi0dxyhDc",
-  authDomain: "dyeac-dev.firebaseapp.com",
-  projectId: "dyeac-dev",
-  storageBucket: "dyeac-dev.appspot.com",
-  messagingSenderId: "675710346530",
-  appId: "1:675710346530:web:ddf3b0114948ae5668f17b"
-};
-
-// // Dyeac
+// // Dyeac-Dev
 // const firebaseConfig = {
-//   apiKey: "AIzaSyAoZzqNTkmRw3ycCZlWRODV3pvpeF_Z-eg",
-//   authDomain: "dyeac-8fc86.firebaseapp.com",
-//   databaseURL: "https://dyeac-8fc86-default-rtdb.firebaseio.com",
-//   projectId: "dyeac-8fc86",
-//   storageBucket: "dyeac-8fc86.appspot.com",
-//   messagingSenderId: "255357549075",
-//   appId: "1:255357549075:web:826dfcba6022e3cdfe1de6",
-//   measurementId: "G-G0XDWNWV6X"
+//   apiKey: "AIzaSyD3cuKqdUz7--QTLZ7gZNOrAvRi0dxyhDc",
+//   authDomain: "dyeac-dev.firebaseapp.com",
+//   projectId: "dyeac-dev",
+//   storageBucket: "dyeac-dev.appspot.com",
+//   messagingSenderId: "675710346530",
+//   appId: "1:675710346530:web:ddf3b0114948ae5668f17b"
 // };
+
+// Dyeac
+const firebaseConfig = {
+  apiKey: "AIzaSyAoZzqNTkmRw3ycCZlWRODV3pvpeF_Z-eg",
+  authDomain: "dyeac-8fc86.firebaseapp.com",
+  databaseURL: "https://dyeac-8fc86-default-rtdb.firebaseio.com",
+  projectId: "dyeac-8fc86",
+  storageBucket: "dyeac-8fc86.appspot.com",
+  messagingSenderId: "255357549075",
+  appId: "1:255357549075:web:826dfcba6022e3cdfe1de6",
+  measurementId: "G-G0XDWNWV6X"
+};
   
   // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -119,7 +120,7 @@ export async function uploadProcess(files, fileName, extention, medicineName, da
       var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
   },
   (error) => {
-      alert("error: image not download! cause: " +error)
+      throw new Error("error: image not download! cause: " +error)
   },()=>{
   
   getDownloadURL(uploadTask.snapshot.ref).then((downloadURL)=>{
@@ -135,25 +136,25 @@ export async function uploadProcess(files, fileName, extention, medicineName, da
 })}
 
 export async function addNewMedicineData(name, medData, url, option, count){
-  await addDoc(collection(db, "medicine"), {
-      medicineName: name,
-      data: medData,
-      imageURL: url,
-      useOption: option,
-      medicineID: count+1
-  })
-  alert("Add medicine success")
-  window.location.reload();
-  // Swal.fire({
-  //     icon: 'success',
-  //     title: 'Add medicine Succcess!',
-  //     text: 'Add new medicine is done',
-  //     showConfirmButton: true,
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-          
-  //     }
-  // })
+  try {
+    await addDoc(collection(db, "medicine"), {
+        medicineName: name,
+        data: medData,
+        imageURL: url,
+        useOption: option,
+        medicineID: count+1
+    })
+    Swal.fire({
+      icon: 'success',
+      title: 'เพื่มยาใหม่สำเร็จแล้ว',
+      showConfirmButton: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.reload();
+        }})
+    } catch (error) {
+      throw new Error(error)
+    }
 }
 
 export async function updateMedicineData(id, name, data, url, option){
@@ -167,7 +168,16 @@ export async function updateMedicineData(id, name, data, url, option){
       useOption: option,
     }
   ).then(()=>{
-    alert("update medicine data success");
+    Swal.fire({
+      icon: 'success',
+      title: 'แก้ไขข้อมูลยาสำเร็จ',
+      showConfirmButton: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          window.history.back()
+        }
+      })
   })
 }
 
@@ -180,7 +190,16 @@ export async function updateUserHistory(uid, history){
       history: history,
     }
   ).then(()=>{
-    alert("update user history data success");
+    Swal.fire({
+      icon: 'success',
+      title: 'อัพเดทรายการยาสำเร็จ',
+      showConfirmButton: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+        }
+      })
+    // alert("update user history data success");
   })
 }
 
@@ -193,32 +212,71 @@ export async function disableMedicine(pid){
       online: false,
     }
   ).then(()=>{
-    alert("disable medicine is success");
+    Swal.fire({
+      icon: 'success',
+      title: 'ลบยาออกจากรายการยาแล้ว',
+      showConfirmButton: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+        }
+      })
+    // alert("disable medicine is success");
   })
 }
 
 export async function deleteMedicine(id){
-  if (confirm("Do you want to delete! medicine: " + id) == true) {
-    // OK
-    await deleteDoc(doc(db, "medicine", id));
-    alert("Delete medicine success!");
-    window.location.reload();
-  } else {
-    // canceled!
-  }
-  // return 
+  Swal.fire({
+    title: 'ลบยา?',
+    text: "แน่ใจหรือไม่ว่าต้องการลบยานี้ออก?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#808080',
+    confirmButtonText: 'ใช่, ลบ!'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await deleteDoc(doc(db, "medicine", id)).then(()=>{
+        Swal.fire({
+          icon: 'success',
+          title: 'ลบยาสำเร็จ',
+          showConfirmButton: true,
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          })
+      })
+    }
+  })
 }
 
 export async function deletePatient(id){
-  if (confirm("Do you want to delete! patient: " + id) == true) {
-    // OK
-    await deleteDoc(doc(db, "user-1", id));
-    alert("Delete patient success!");
-    window.location.reload();
-  } else {
-    // canceled!
-  }
-  // return 
+  Swal.fire({
+    title: 'ลบผู้ป่วย?',
+    text: "แน่ใจหรือไม่ว่าต้องการผู้ป่วยคนนี้ออก?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#808080',
+    confirmButtonText: 'ใช่, ลบ!'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      await deleteDoc(doc(db, "user-1", id)).then(()=>{
+        Swal.fire({
+          icon: 'success',
+          title: 'ลบยาผู้ป่วยสำเร็จ',
+          showConfirmButton: true,
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          })
+      })
+    }
+  })
 }
 
 export async function getPrescription(id){
@@ -245,16 +303,9 @@ export async function changeLocationToURL(storageLocation, item){
 
       item.src = url;
     })
-    // .catch((error) => {
-    //   Swal.fire({
-    //     icon: 'error',
-    //     title: 'Oops...!',
-    //     text: "Something went wrong because: "+ error,
-    //     showConfirmButton: false,
-    //     showDenyButton: true,
-    //     denyButtonText: `Close`,
-    //   });  
-    // });
+    .catch((error) => {
+      throw new Error(error)
+    });
 };
 
 export async function createPrescription(prescriptions,history){
@@ -280,7 +331,6 @@ export async function createPrescription(prescriptions,history){
         });
         await updateUserHistory(userID, history)
     })
-    // alert('Add medicine to prescription Succcess!' + history);
   } catch (error) {
     throw new Error(error)
   }
@@ -305,9 +355,18 @@ export async function createPatient(name, surname, phoneNO, email, password, dat
     uid: docRef.id,
   }).catch((error) => {
     throw new Error(error)
-  });
-  alert('Add patient Succcess!' + docRef.id);
-  window.location.reload();
+  }).then(()=> {
+    Swal.fire({
+      icon: 'success',
+      title: 'เพิ่มผู้ป่วยใหม่สำเร็จ',
+      showConfirmButton: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          window.location.reload();
+        }
+      })
+  })
 };
 
 export async function login(email,password){
@@ -339,7 +398,7 @@ export async function login(email,password){
 
 export async function getlogdroptimes(history,logdrops){
   history.forEach(async function (value) {
-    let q = query(collection(db, "logdroptime-1"), where("pid", "==", value))
+    let q = query(collection(db, "test-logdroptime-1"), where("pid", "==", value))
     let docSnap = await getDocs(q);
     docSnap.forEach(async (doc)  => {
       var dateTime = new Date(doc.data().timestamp.seconds * 1000);

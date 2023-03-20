@@ -114,6 +114,7 @@
 <script>
 
 // import { getlogdroptime, getPrescription, changeLocationToURL } from '../firebase.js'
+import Swal from 'sweetalert2'
 import { getMedicines, createPrescription, disableMedicine } from '../firebase.js'
 import Popup from '../components/Popup.vue'
 import $ from 'jquery' ;
@@ -213,47 +214,75 @@ export default {
                 this.isEdited = true
                 // console.log(this.presription)
             }catch(error){
-                alert(error)
+                // alert(error)
+                Swal.fire({
+                      icon: 'error',
+                      title: 'มีปัญหาในการเพิ่มยา',
+                      text: error,
+                    })
             }
         },
         deleteMed(index,medicine){
             let text = "คุณแน่ใจไหมว่าต้องการลบยา " + medicine.medicineName + " ออกจากรายการยา " 
-            if (confirm(text) == true) {
-                // text = "You pressed OK!";
+            Swal.fire({
+              title: 'ลบ?',
+              text: "แน่ใจหรือไม่ว่าต้องการลบยานี้ออก?",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#808080',
+              confirmButtonText: 'ใช่, ลบ!'
+            }).then(async (result) => {
+              if (result.isConfirmed) {
                 this.currentMedicines.splice(index,1)
                 this.isEdited = true
                 this.deletedMedicine.push(medicine);
-            } else {
-                // text = "You canceled!";
-            }
+                this.oldMedicines.push(medicine);
+              }
+            })
         },
         async submitMedicineList(e){
             e.preventDefault();
-            try{
-                if(this.deletedMedicine.length!=0){
-                    this.deletedMedicine.forEach( (element) =>  {
-                        if(this.addedMedicine.length>0){
-                            if(this.addedMedicine.includes(element)){
-                                // alert('delete added medicine name' + element.medicineName)
-                                var index = this.addedMedicine.indexOf(element)
-                                this.addedMedicine.splice(index,1)
+            Swal.fire({
+              title: 'ยืนยันการเปลี่ยนแปลง?',
+              text: "แน่ใจหรือไม่ว่าต้องการทำการบันทึกการเปลี่ยนแปลงรายการยา?",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#509a21',
+              cancelButtonColor: '#808080',
+              confirmButtonText: 'ใช่, บันทึก!',
+              cancelButtonText: `ยกเลิก`
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                try{
+                    if(this.deletedMedicine.length!=0){
+                        this.deletedMedicine.forEach( (element) =>  {
+                            if(this.addedMedicine.length>0){
+                                if(this.addedMedicine.includes(element)){
+                                    // alert('delete added medicine name' + element.medicineName)
+                                    var index = this.addedMedicine.indexOf(element)
+                                    this.addedMedicine.splice(index,1)
+                                }else{
+                                    disableMedicine(element.pid)
+                                }
                             }else{
                                 disableMedicine(element.pid)
                             }
-                        }else{
-                            disableMedicine(element.pid)
-                        }
+                        })
+                    }
+                    if(this.addedMedicine.length!=0){
+                        await createPrescription(this.addedMedicine,this.history)
+                    }
+                }catch(error){
+                    // alert(error)
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'มีปัญหาในการแก้ไขรายการยา',
+                      text: error,
                     })
                 }
-                if(this.addedMedicine.length!=0){
-                    await createPrescription(this.addedMedicine,this.history)
-                }
-            }catch(error){
-                alert(error)
-            } finally {
-                // alert("แก้ไขรายการยาสำเร็จแล้ว")
-                // this.$router.push({ name: 'Patient'})
-            }
+              }
+            })
         },
         close(){
             this.isShowModal = false

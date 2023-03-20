@@ -68,16 +68,24 @@
 
 <script>
 import { uploadProcess, updateMedicineData } from '../firebase.js'
+import Swal from 'sweetalert2'
 export default {
     name: 'EditMedicine',
-    async mounted() {
-        this.getOption()
-    },
     created(){
-        this.medData = this.$route.params.data
-        this.listStringOption = this.medData.option
+        this.getMedicineData();
+        this.listStringOption = this.medData.option;
+    },
+    async mounted() {
+        this.getOption();
     },
     methods: {
+        getMedicineData(){
+            if(this.$route.params.data==null){
+                this.medData = JSON.parse(localStorage.getItem('medicineData'));
+            }else{
+                this.medData = this.$route.params.data
+            }
+        },
         getOption(){
             this.listStringOption.forEach((element, index) => {
                 this.createElement(this.listStringOption[index]);
@@ -224,13 +232,27 @@ export default {
             this.medData.name = document.getElementById("medicineName").value;
             this.medData.data = document.getElementById("data").value;
             // alert('create')
-            if(!this.change){
+            Swal.fire({
+              title: 'บันทึกการแก้ไข?',
+              text: "แน่ใจหรือไม่ว่าต้องการบันทึกการแก้ไขข้อมูลยาตัวนี้?",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#509a21',
+              cancelButtonColor: '#808080',
+              confirmButtonText: 'ใช่, บันทึก!',
+              cancelButtonText: 'ยกเลิก'
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                if(!this.change){
                 // alert("not change");
-                updateMedicineData(this.medData.id, this.medData.name, this.medData.data, this.medData.imageURL, this.listStringOption);
-            }else{
-                // alert("change");
-                uploadProcess(this.files, this.fileName, this.extention, this.medData.name, this.medData.data , this.listStringOption, this.latestID, this.medData.id);
-            }
+                    updateMedicineData(this.medData.id, this.medData.name, this.medData.data, this.medData.imageURL, this.listStringOption);
+                }else{
+                    // alert("change");
+                    uploadProcess(this.files, this.fileName, this.extention, this.medData.name, this.medData.data , this.listStringOption, this.latestID, this.medData.id);
+                }
+              }
+            })
+            
         },
     },
     data () {

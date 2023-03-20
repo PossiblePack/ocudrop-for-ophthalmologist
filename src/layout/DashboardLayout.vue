@@ -20,11 +20,11 @@
       </sidebar-link>
       
       <template slot="bottom-links">
-        <div class="d-flex justify-content-start">
+        <!-- <div class="d-flex justify-content-start">
           <button class="btn w-100 rounded text-white" @click="logout">
             <i class="nc-icon nc-lock-circle-open icon-bold mx-1"></i>ออกจากระบบ
           </button>
-        </div>
+        </div> -->
       </template>
     </side-bar>
     <div class="main-panel">

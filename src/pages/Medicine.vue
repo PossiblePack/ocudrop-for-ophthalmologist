@@ -19,7 +19,7 @@
 								<th style="width: 10%" class="bg-primary text-white" >ชื่อยา</th>
 								<th style="width: 20%" class="bg-primary text-white" >รูปยา</th>
 								<th style="width: 20%" class="bg-primary text-white" >รายละเอียด</th>
-								<th style="width: 20%" class="bg-primary text-white" >วิธีการใช้ยา</th>
+								<!-- <th style="width: 20%" class="bg-primary text-white" >วิธีการใช้ยา</th> -->
 								<th class="bg-primary text-white">การจัดการข้อมูล</th>
 							</tr>
 						</thead>
@@ -29,7 +29,7 @@
 								<td >{{medicine.name}}</td>
 								<td ><img v-bind:src="medicine.imageURL" height="150px" alt=""></td>
 								<td >{{medicine.data}}</td>
-								<td >{{medicine.option}}</td>
+								<!-- <td >{{medicine.option}}</td> -->
 								<td style="height: 150px;width: 100%;">
 									<button class="btn btn-success btn-sm h-25" @click="editMedicine(medicine.id,medicine.medID,medicine.name,medicine.imageURL,medicine.data,medicine.option)">
 										แก้ไข
@@ -81,11 +81,11 @@ export default {
 			$('#medicineTable').DataTable({
 				autoWidth: false,
 				"columns": [
-  				  { "width": "5%" , "height": "100%"},
-  				  { "width": "5%" , "height": "100%"},
-  				  { "width": "20%" , "height": "100%"},
-  				  { "width": "20%" , "height": "100%"},
+  				  { "width": "10%" , "height": "100%"},
+  				  { "width": "10%" , "height": "100%"},
   				  { "width": "30%" , "height": "100%"},
+  				  { "width": "30%" , "height": "100%"},
+  				//   { "width": "30%" , "height": "100%"},
 				  { "height": "100%"},
   				]
 			})
@@ -109,6 +109,7 @@ export default {
 				option: option,
 				id: id,
 			};
+			localStorage.setItem('medicineData', JSON.stringify(medicine));
 			this.$router.push({ name: 'editMedicine', params: {data: medicine , id:id}})
 		},
 	},

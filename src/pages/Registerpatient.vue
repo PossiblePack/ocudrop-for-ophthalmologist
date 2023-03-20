@@ -54,6 +54,7 @@
 <script>
 import { createPatient } from '../firebase.js'
 import { sha256 } from 'js-sha256';
+import Swal from 'sweetalert2'
 
 export default {
     name: "RegisterPatient",
@@ -68,18 +69,34 @@ export default {
             const repassword = document.getElementById('repassword').value;
             const dname = document.getElementById('doctorname').value;
             const dateTime = new Date(Date.now());
-
-            try{
-                if(password == repassword){
-                    const hashPassword = this.hashPassword(password);
-                    // alert(hashPassword)
-                    await createPatient(name, surname, phoneNO, email, hashPassword, dateTime, dname)
-                }else{
-                    alert("password mismatch");
+            Swal.fire({
+              title: 'บันทึกการเปลี่ยนแปลง?',
+              text: "แน่ใจหรือไม่ว่าต้องการลงทะเบียนผู้ป่วยคนนี้?",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#509a21',
+              cancelButtonColor: '#808080',
+              confirmButtonText: 'ใช่, ลงทะเบียน!',
+              cancelButtonText: 'ยกเลิก'
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                try{
+                    if(password == repassword){
+                        const hashPassword = this.hashPassword(password);
+                        await createPatient(name, surname, phoneNO, email, hashPassword, dateTime, dname)
+                    }else{
+                        throw new Error("รหัสผ่านไม่ตรงกัน");
+                    }
+                }catch(error){
+                    // alert(error)
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'มีปัญหาในการลงทะเบียนผู้ป่วย',
+                      text: error,
+                    })
                 }
-            }catch(error){
-                alert(error)
-            }
+              }
+            })
         },
         hashPassword(password){
             // const password = document.getElementById('password').value;

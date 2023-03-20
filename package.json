@@ -38,6 +38,7 @@
     "nvm": "^0.0.4",
     "pdfmake": "^0.2.7",
     "register-service-worker": "1.7.2",
+    "sweetalert2": "^11.7.3",
     "swiper": "^6.8.4",
     "v-tooltip": "2.0.0-rc.33",
     "vue": "2.7.14",
