@@ -18,7 +18,7 @@ import { getAuth, onAuthStateChanged} from "firebase/auth";
     },
     data () {
         return {
-            logedIn: false,
+            logedIn: true,
         }
     },
     methods: {
