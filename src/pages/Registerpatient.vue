@@ -7,35 +7,35 @@
                     <form class="mt-4 mb-4" action="" form v-on:submit="registerPatient">
                             <div class="row ">
                                 <div class="col-6">
-                                    <label class="form-label">ชื่อ</label>
+                                    <span class="form-label">ชื่อ</span>
                                     <input class="form-control" type="text" id="name" placeholder="กรุณาป้อนชื่อ" required>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label">นามสกุล</label>
+                                    <span class="form-label">นามสกุล</span>
                                     <input class="form-control" type="text" id="surname" placeholder="กรุณาป้อนนามสกุล" required>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label">เบอร์โทรศัพท์</label>
-                                    <input class="form-control" type="tel" id="phoneNO" placeholder="กรุณาป้อนเบอร์โทรศัพท์" required>
+                                    <span class="form-label">เบอร์โทรศัพท์</span>
+                                    <input class="form-control" type="number" id="phoneNO" placeholder="กรุณาป้อนเบอร์โทรศัพท์" required>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label">อีเมล</label>
+                                    <span class="form-label">อีเมล (optional)</span>
                                     <input class="form-control" type="email" id="email" placeholder="กรุณาป้อนอีเมล" >
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label">รหัสผ่าน</label>
+                                    <span class="form-label">รหัสผ่าน</span>
                                     <input class="form-control" type="password" id="password" placeholder="กรุณาป้อนรหัสผ่าน" required>
                                 </div>
                                 <br>
                                 <div class="col-6">
-                                    <label class="form-label">ยืนยันรหัสผ่าน</label>
+                                    <span class="form-label">ยืนยันรหัสผ่าน</span>
                                     <input class="form-control" type="password" id="repassword" placeholder="กรุณาป้อนรหัสผ่าน" >
                                 </div>
                                 <!-- <br> -->
-                                <div class="col-6">
-                                    <label class="form-label d-flex justify-content-start">แพทย์ผู้ดูแล</label>
+                                <!-- <div class="col-6">
+                                    <span class="form-label d-flex justify-content-start">แพทย์ผู้ดูแล</span>
                                     <input class="form-control disabled" type="text" id="doctorname" required readonly>
-                                </div>
+                                </div> -->
                                 <!-- <div class="col-6">
                                 </div> -->
                                 <div class="mt-4 d-flex justify-content-center col-12">
@@ -67,7 +67,7 @@ export default {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const repassword = document.getElementById('repassword').value;
-            const dname = document.getElementById('doctorname').value;
+            // const dname = document.getElementById('doctorname').value;
             const dateTime = new Date(Date.now());
             Swal.fire({
               title: 'บันทึกการเปลี่ยนแปลง?',
@@ -83,7 +83,11 @@ export default {
                 try{
                     if(password == repassword){
                         const hashPassword = this.hashPassword(password);
-                        await createPatient(name, surname, phoneNO, email, hashPassword, dateTime, dname)
+                        if(phoneNO.length==10){
+                            await createPatient(name, surname, phoneNO, email, hashPassword, dateTime, "")
+                        }else{
+                            throw new Error("เบอร์โทรศัพท์ต้องมีความยาวเท่ากับ 10 ตัวอักษรเท่านั้น");
+                        }
                     }else{
                         throw new Error("รหัสผ่านไม่ตรงกัน");
                     }
