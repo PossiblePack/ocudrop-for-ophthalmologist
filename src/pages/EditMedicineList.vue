@@ -292,7 +292,9 @@ export default {
                 placeholder: "Select a state",
                 allowClear: true
             });
-            this.isShowModal = true
+            setTimeout(()=> {
+                this.isShowModal = true
+            },500);
         },
         myChangeEvent(val){
             console.log(val);
