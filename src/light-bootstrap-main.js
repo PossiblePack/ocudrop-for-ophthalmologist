@@ -23,5 +23,6 @@ export default {
     Vue.use(SideBar)
     Vue.use(Notifications)
     Vue.use(VTooltip)
+    Vue.use(require('moment'));
   }
 }

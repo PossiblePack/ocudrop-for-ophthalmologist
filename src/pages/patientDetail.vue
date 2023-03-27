@@ -35,28 +35,49 @@
                                     <button class="btn btn-link" @click="this.editMedicineList">แก้ไขรายการยา</button>
                                 </div>
                             </div>
-                            <h4 class="mb-2 mt-5"> ข้อมูลการหยอดตา</h4>
-                            <form>
-                                <div>
-                                    <table id="logdropdata" class="table table-bordered display justify-content-center" >
+                            <div v-if="logdrops.length!=0">
+                                <h4 class="mb-2 mt-5"> ข้อมูลการหยอดตา</h4>
+                                <form>
+                                    <table class="table table-bordered display justify-content-center" >
                                         <thead class="bg-primary">
                                             <tr>
-                                                <th class="text-white">วันที่หยอด</th>
-                                                <th class="text-white">เวลาที่หยอด</th>
-                                                <!-- <th class="text-white">ชื่อยา</th>   -->
-                                                <th class="text-white">เวลาที่ตั้งแจ้งเตือน</th>
-                                                <th class="text-white w-100">หมายเหตุ</th>
+                                                <th class="text-white" style="width:25%">หยอดตาตามแจ้งเตือน (ครั้ง)</th>
+                                                <th class="text-white" style="width:25%">หยอดตาโดยไม่ผ่านการแจ้งเตือน (ครั้ง)</th>  
+                                                <th class="text-white" style="width:25%">เลื่อนเวลาหยอด (ครั้ง)</th>
+                                                <th class="text-white" style="width:100%">รวมทั้งหมด (ครั้ง)</th>
                                             </tr>
                                         </thead>
-                                        <tbody v-for=" logdrop in  this.logdrops" :key="logdrop.index">
-                                            <td >{{logdrop.date}}</td>
-								            <td >{{logdrop.time}}</td>
-                                            <td >{{logdrop.scheduleTime}}</td>
-                                            <td style="width: 100%">{{logdrop.mark}}</td>
+                                        <tbody>
+                                            <tr>
+                                                <th>{{notiCount}}</th>
+                                                <th>{{withoutnotiCount}}</th>  
+                                                <th>{{other}}</th>
+                                                <th>{{notiCount+withoutnotiCount+other}}</th>
+                                            </tr>
                                         </tbody>
                                     </table>
-                                </div>
-                            </form>
+                                    <div>
+                                        <table id="logdropdata" class="table table-bordered display justify-content-center" >
+                                            <thead class="bg-primary">
+                                                <tr>
+                                                    <th class="text-white">วันที่หยอด</th>
+                                                    <th class="text-white">ชื่อยา</th> 
+                                                    <th class="text-white">เวลาที่ตั้งแจ้งเตือน</th>
+                                                    <th class="text-white">เวลาที่หยอด</th>
+                                                    <th class="text-white">หมายเหตุ</th>
+                                                    <th class="text-white"></th>
+                                                </tr>
+                                            </thead>
+                                            <!-- <tbody v-for=" logdrop in  this.logdrops" :key="logdrop.index">
+                                                <td >{{logdrop.date}}</td>
+							    	            <td >{{logdrop.time}}</td>
+                                                <td >{{logdrop.scheduleTime}}</td>
+                                                <td style="width: 100%">{{logdrop.mark}}</td>
+                                            </tbody> -->
+                                        </table>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>  
@@ -73,8 +94,7 @@ import Swiper from 'swiper';
 // Import Swiper styles
 import 'swiper/swiper.min.css'
 
-import { getlogdroptimes, getPrescription, changeLocationToURL } from '../firebase.js'
-
+import { getlogdroptimes, getPrescription, changeLocationToURL, getMedcineName } from '../firebase.js'
 export default {
     name: "PatientDetail",
     async created(){
@@ -82,9 +102,10 @@ export default {
             this.getPatientData()
             if(this.patientData.history.length !== 0){
                 this.haveMedicine = true;
-                this.getMedicineList(this.patientData.history, this.medicineList)
-                this.logdrops = await this.getlogdropList();
-                // this.setTable(logdropdata)
+                await this.getMedicineList(this.patientData.history, this.medicineList);
+                // this.logdrops = await this.getlogdropList()
+                this.logdrops = await getlogdroptimes(this.patientData.history, this.logdrops)
+                
             }
         }
         catch(err){
@@ -100,7 +121,6 @@ export default {
         setTimeout(()=> {
             this.setupSwiper();
         },2000);
-        
     },
     data () {
         return {
@@ -114,29 +134,61 @@ export default {
             other: 0,
         }
     },
+    watch: {
+        logdrops(val){
+            this.addLogDropRow(val)
+        },
+        medicineList(val){
+            console.log(val)
+        }
+    },
     methods: {
         async getlogdropList () {
             return new Promise((resolve, rejects) => {
                 return setTimeout(() => resolve(getlogdroptimes(this.patientData.history, this.logdrops)), 1000) ;
             })
         },
-        setTable(logdropdata){ 
-          var table = $('#logdropdata').DataTable({});
+        addLogDropRow(val){
+            // console.log(val)
+            $('#logdropdata').DataTable()
+                .destroy()
+            $('#logdropdata').DataTable
+            var table = $('#logdropdata').DataTable({
+                columnDefs: [
+                    {
+                        target: 5,
+                        visible: false,
+                    },
+                    { "width": "20%", "targets": 1 }
+                ],
+            });
+            this.getLogdropOption(val);
+            val.forEach(async element => {
+                var name = await getMedcineName(element.pid);
+                console.log(element)
+                table
+                .row.add( [ element.realdate, name, element.scheduleTime, element.time, element.mark, element.date] )
+                .draw()
+                .order( [ 5, 'desc' ] )
+                .node();
+            });
         },
         getLogdropOption(logdrops){
-            console.log(logdrops);
-            // if(logdrops.length!==0){
-            //     logdrops.forEach(element => {
-            //     if(element.mark == "complete"){
-            //       this.notiCount+=1;
-            //       console.log(this.notiCount)
-            //     }else if(element.mark == "complete (without notification)"){
-            //       this.withoutnotiCount+=1;
-            //     }else{
-            //       this.other+=1;
-            //     }
-            // });
-            // }
+            this.notiCount = 0
+            this.withoutnotiCount=0
+            this.other=0
+            if(logdrops.length!==0){
+                logdrops.forEach(element => {
+                if(element.mark == "complete"){
+                  this.notiCount+=1;
+                  console.log(this.notiCount)
+                }else if(element.mark == "complete (without notification)"){
+                  this.withoutnotiCount+=1;
+                }else{
+                  this.other+=1;
+                }
+            });
+            }
         },
         getPatientData(){
             if(this.$route.params.data == null){
@@ -147,7 +199,7 @@ export default {
         },
         setupSwiper(){
             var swiper = new Swiper(".mySwiper", {
-              slidesPerView: 2.2,
+              slidesPerView: 2.5,
               spaceBetween: 20,
               pagination: {
                 el: ".swiper-pagination",

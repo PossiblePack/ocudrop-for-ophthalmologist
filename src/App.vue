@@ -1,13 +1,27 @@
 <template>
-  <div :class="{'nav-open': $sidebar.showSidebar}">
-    <notifications></notifications>
-    <router-view></router-view>
+  <div>
+    <!-- <notifications></notifications> -->
+    <router-view ></router-view>
+    <!-- <router-view v-if="logedIn"></router-view>
+    <login-page v-else class="h-100"></login-page> -->
   </div>
 </template>
 
 <script>
-
-  export default {}
+import LoginPage from './pages/Login.vue'
+  export default {
+    components: {
+      LoginPage
+    },
+    data () {
+        return {
+            logedIn: false,
+        }
+    },
+    methods: {
+      
+    }
+  }
 </script>
 <style lang="scss">
   .vue-notifyjs.notifications{
