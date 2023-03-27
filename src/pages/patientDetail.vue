@@ -90,6 +90,7 @@
 <script>
 import $ from 'jquery' ;
 import Swiper from 'swiper';
+import Swal from 'sweetalert2'
 
 // Import Swiper styles
 import 'swiper/swiper.min.css'

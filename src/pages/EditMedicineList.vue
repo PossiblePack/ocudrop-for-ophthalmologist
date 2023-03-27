@@ -231,7 +231,8 @@ export default {
               showCancelButton: true,
               confirmButtonColor: '#d33',
               cancelButtonColor: '#808080',
-              confirmButtonText: 'ใช่, ลบ!'
+              confirmButtonText: 'ใช่, ลบ!',
+              cancelButtonText: 'ยกเลิก'
             }).then(async (result) => {
               if (result.isConfirmed) {
                 this.currentMedicines.splice(index,1)
