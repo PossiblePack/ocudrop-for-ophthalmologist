@@ -4,9 +4,9 @@
        :data-color="backgroundColor">
     <div class="sidebar-wrapper">
       <div class="logo">
-        <a href="#" class="simple-text logo__container">
+        <a href="#" class="simple-text logo__container name">
             <div class="logo-img">
-                <img src="https://firebasestorage.googleapis.com/v0/b/dyeac-8fc86.appspot.com/o/assets%2Feye-drops.png?alt=media&token=49531939-79ee-40af-a4f9-ed66ff6dc524" alt="">
+                <img src="https://firebasestorage.googleapis.com/v0/b/dyeac-8fc86.appspot.com/o/assets%2FOcuDrop.png?alt=media&token=c838689e-a902-4479-9df5-62fb0bb52579" alt="">
             </div>
           {{title}}
         </a>
@@ -42,7 +42,7 @@
     props: {
       title: {
         type: String,
-        default: 'DYEAC'
+        default: 'OcuDrop'
       },
       backgroundColor: {
         type: String,

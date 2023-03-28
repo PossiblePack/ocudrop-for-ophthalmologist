@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
       <!-- <a class="navbar-brand" href="#">Dashboard</a> -->
-      <h2 class="navbar-brand">Dyeac for Ophthalmologist</h2>
+      <h2 class="navbar-brand">OcuDrop for Ophthalmologist</h2>
       <button type="button"
               class="navbar-toggler navbar-toggler-right"
               :class="{toggled: $sidebar.showSidebar}"

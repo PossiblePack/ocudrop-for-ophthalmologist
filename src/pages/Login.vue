@@ -1,7 +1,10 @@
 <template>
     <div class="wrapper-lg">
         <div class="logo-lg">
-            <img src="https://firebasestorage.googleapis.com/v0/b/dyeac-8fc86.appspot.com/o/assets%2Feye-drops.png?alt=media&token=49531939-79ee-40af-a4f9-ed66ff6dc524" alt="">
+            <img src="https://firebasestorage.googleapis.com/v0/b/dyeac-8fc86.appspot.com/o/assets%2FOcuDrop.png?alt=media&token=c838689e-a902-4479-9df5-62fb0bb52579" alt="">
+        </div>
+        <div class="text-center mt-4 name">
+            OcuDrop
         </div>
         <div class="text-center mt-4 name">
             ระบบจัดการข้อมูลผู้ป่วยโรคตา
