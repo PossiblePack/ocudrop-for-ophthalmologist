@@ -7,11 +7,11 @@
 				<h2 class="mt-5 mb-4 d-flex justify-content-center">ข้อมูลยา</h2>
               <div class="mb-4">
                   <div>
-					<router-link :to="`addmedicine`">
-						<div class="d-flex justify-content-end">
+					<div class="d-flex justify-content-end">
+						<router-link :to="`addmedicine`">
 							<button class="mb-4 btn bg-primary text-white"><i class='bx bx-plus-medical'></i> เพิ่มยา</button>
-						</div>
-					</router-link>
+						</router-link>
+					</div>
 					<table class=" table table-bordered display justify-content-center" id="medicineTable">
 						<thead >
 							<tr>
@@ -34,9 +34,9 @@
 									<button class="btn btn-success btn-sm h-25" @click="editMedicine(medicine.id,medicine.medID,medicine.name,medicine.imageURL,medicine.data,medicine.option)">
 										แก้ไข
 									</button>
-									<button class="btn btn-danger btn-sm ms-5 h-25" @click="deleteMedicine(medicine.id)">
+									<!-- <button class="btn btn-danger btn-sm ms-5 h-25" @click="deleteMedicine(medicine.id)">
 										ลบ
-									</button>
+									</button> -->
 								</td>
 							</tr>
 						</tbody>
