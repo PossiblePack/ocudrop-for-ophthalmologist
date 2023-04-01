@@ -12,6 +12,7 @@ import AddMedicine from 'src/pages/AddMedicine.vue'
 import EditMedicine from 'src/pages/EditMedicine.vue'
 import patientDetail from 'src/pages/patientDetail.vue'
 import EditMedicineList from 'src/pages/EditMedicineList.vue'
+import AddMedicineList from 'src/pages/AddMedicineToList.vue'
 import Icons from 'src/pages/Icons.vue'
 import Maps from 'src/pages/Maps.vue'
 import Notifications from 'src/pages/Notifications.vue'
@@ -34,49 +35,46 @@ const routes = [
         path: '/patient/:id', 
         name: 'patientDetail', 
         component: patientDetail, 
-        meta: {auth: true}
       }, 
       {
         path: 'patient', 
         name: 'Patient', 
         component: Patient,
-        meta: {auth: true}
       }, 
       {
         path: 'registerpatient', 
         name: 'RegisterPatient', 
         component: RegisterPatient ,
-        meta: {auth: true}
       }, 
       {
         path: 'medicine', 
         name: 'Medicine', 
         component: Medicine,
-        meta: {auth: true}
       },
       {
         path: 'addmedicine', 
         name: 'AddMedicine', 
         component: AddMedicine,
-        meta: {auth: true}
+      },
+      {
+        path: 'AddMedicineToList', 
+        name: 'AddMedicineToList', 
+        component: AddMedicineList,
       },
       {
         path: '/medicine/:id', 
         name: 'editMedicine', 
         component: EditMedicine,
-        meta: {auth: true}
       }, 
       {
         path: '/medicineList/:id', 
         name: 'editMedicineList', 
         component: EditMedicineList,
-        meta: {auth: true}
       }, 
       {
         path: 'login',
         name: 'Login',
         component: Login,
-        meta: {auth: false}
       },
       
     ]

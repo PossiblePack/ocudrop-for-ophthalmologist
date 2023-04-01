@@ -21,7 +21,7 @@
       
       <template slot="bottom-links">
         <div class="d-flex justify-content-center">
-          <button style="width:90%" class="btn btn-danger rounded text-white" @click="logout">
+          <button style="width:90%" class="btn bg-danger rounded text-white" @click="logout">
             <i class="nc-icon nc-lock-circle-open icon-bold mx-1"></i>ออกจากระบบ
           </button>
         </div>

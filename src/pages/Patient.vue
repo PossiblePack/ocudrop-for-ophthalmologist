@@ -22,7 +22,7 @@
 								<td >{{patient.phoneNo}}</td>
 								<td >{{patient.createTime}}</td>
 								<td >
-									<button class="btn btn-primary btn-sm " @click="patientDetail(patient)">
+									<button class="btn bg-primary text-white btn-sm " @click="patientDetail(patient)">
 										ข้อมูลเพิ่มเติม
 									</button>
 									<!-- <button class="btn btn-danger btn-sm ms-5" @click="deletePatient(medicine.id)">

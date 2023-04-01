@@ -26,7 +26,7 @@
                                                 <input type="checkbox" name="" value="ก่อนนอน" id="sel-bedtime" class="checkbox col-2">ก่อนนอน
                                             </div>
                                             <div class="d-flex justify-content-end ">
-                                                <button @click="addOption()" style="width: 50px;" class="btn-primary justify-content-end">+</button>
+                                                <button @click="addOption()" style="width: 50px;" class="btn bg-primary text-white justify-content-end">+</button>
                                             </div>
                                             <div class="pb-3 ps-3 group" id="option2">
                                                 <label class="text-start text-label">วันละ</label>
@@ -54,7 +54,7 @@
                                 </div>
                             </div>
                             <div class="d-flex justify-content-center">
-                                <button type="button" class="text-center btn btn-success w-25 " @click="UpdateMedicineData()">บันทึกข้อมูล</button>
+                                <button type="button" class="text-center btn bg-success text-white w-25 " @click="UpdateMedicineData()">บันทึกข้อมูล</button>
                             </div>
                             
                         </div>
@@ -172,7 +172,8 @@ export default {
             const option_delete_el = document.createElement("button");
             option_delete_el.classList.add("delete");
             option_delete_el.classList.add("btn");
-            option_delete_el.classList.add("btn-danger");
+            option_delete_el.classList.add("bg-danger");
+            option_delete_el.classList.add("text-white");
             option_delete_el.innerHTML = "X";
 
 

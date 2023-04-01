@@ -31,7 +31,7 @@
 								<td >{{medicine.data}}</td>
 								<!-- <td >{{medicine.option}}</td> -->
 								<td style="height: 150px;width: 100%;">
-									<button class="btn btn-success btn-sm h-25" @click="editMedicine(medicine.id,medicine.medID,medicine.name,medicine.imageURL,medicine.data,medicine.option)">
+									<button class="btn bg-success text-white btn-sm h-25" @click="editMedicine(medicine.id,medicine.medID,medicine.name,medicine.imageURL,medicine.data,medicine.option)">
 										แก้ไข
 									</button>
 									<!-- <button class="btn btn-danger btn-sm ms-5 h-25" @click="deleteMedicine(medicine.id)">

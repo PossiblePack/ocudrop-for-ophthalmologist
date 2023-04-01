@@ -1,9 +1,9 @@
 <template>
-    <div class="bg_modal " > 
-        <div class="box_modal  w-lg-50">
+    <div class="bg-modal " > 
+        <div class="box-modal ">
             <header class="modal-header">
-                <h5 class="modal__title">{{this.title}}</h5>
-                <button class="btn btn-danger" @click="close">X</button>
+                <h5 class="modal-title">{{this.title}}</h5>
+                <button class="btn bg-danger text-white btn-close" @click="close">X</button>
             </header>
             <section class="modal-body d-flex justify-content-center">
                 <slot name="body">
@@ -36,7 +36,9 @@ export default {
 </script>
 
 <style lang="scss">
-.bg_modal{
+.bg-modal{
+    height: 100%;
+    width: 100%;
     position: fixed;
     z-index: 999;
     top: 0;
@@ -49,7 +51,7 @@ export default {
     align-items: center;
 }
 
-.box_modal{
+.box-modal{
     position: relative;
     /* padding: 30px 30px 40px 30px; */
     width: 630px;
@@ -79,7 +81,7 @@ export default {
     border: none;
     cursor: pointer;
     font-weight: bold;
-    color: #2196F3;
+    color: #f32121;
     background: transparent;
 }
 
@@ -90,7 +92,7 @@ export default {
     background-color: black;
     color: #fff;
 }
-.modal__title{
+.modal-title{
     margin-top: auto;
     padding-bottom: auto;
     padding-left: 10px;

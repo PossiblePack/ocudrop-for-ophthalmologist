@@ -209,7 +209,7 @@ export default {
             });
         },
         editMedicineList(){
-			this.$router.push({ name: 'editMedicineList', params: {current: this.currentMedicine, old: this.oldMedicine , id:this.patientData.docID}})
+			this.$router.push({ name: 'editMedicineList', params: {current: this.currentMedicine, old: this.oldMedicine , id:this.patientData.docID, isEdited:false, addedMedicine: []}})
 		},
         async getMedicineList(history){
             try{
