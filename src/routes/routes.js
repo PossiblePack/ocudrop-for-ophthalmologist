@@ -18,13 +18,14 @@ import Maps from 'src/pages/Maps.vue'
 import Notifications from 'src/pages/Notifications.vue'
 import Upgrade from 'src/pages/Upgrade.vue'
 import Login from 'src/pages/Login.vue'
+import Blank from 'src/pages/Blank.vue'
 
 
 const routes = [
   {
     path: '/',
-    component: Login,
-    redirect: '/admin/login'
+    component: Blank,
+    redirect: '/admin/'
   },
   {
     path: '/admin',
@@ -57,7 +58,7 @@ const routes = [
         component: AddMedicine,
       },
       {
-        path: 'AddMedicineToList', 
+        path: 'addMedicineToList', 
         name: 'AddMedicineToList', 
         component: AddMedicineList,
       },

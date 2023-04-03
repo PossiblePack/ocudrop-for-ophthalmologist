@@ -44,9 +44,9 @@ export default {
               .then(async (userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                localStorage.setItem('UID', user.uid);
-                localStorage.setItem('Email', email);
-                localStorage.setItem('Password', password);
+                // localStorage.setItem('UID', user.uid);
+                // localStorage.setItem('Email', email);
+                // localStorage.setItem('Password', password);
                 // alert(user.uid);
 
                 this.$emit("show",true)

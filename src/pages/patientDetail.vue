@@ -15,16 +15,12 @@
                                 <span class="form-label">เบอร์โทรศัพท์: </span>
                                 <span id="phoneNO" >{{patientData.phoneNo}}</span>
                             </div>
-                            <!-- <div class="mb-2">
-                                <span class="form-label">รหัสผ่าน: </span>
-                                <span id="password" >{{patientData.password}}</span>
-                            </div> -->
                             <div class="mb-2">
                                 <span class="form-label">อีเมล: </span>
                                 <span id="email" >{{patientData.email}}</span>
                             </div>
                             <h4  class="mb-2 mt-5" id="medLabel" v-if="haveMedicine">ยาที่ใช้อยู่</h4>
-                            <h4 class="mb-2 mt-5" v-else>ยังไม่ได้จ่ายยา <button class="btn btn-link" @click="this.editMedicineList">เพิ่มยา</button></h4>
+                            
                             <div v-if="haveMedicine">
                                 <div id="medicineList" class="swiper mySwiper" v-if="haveMedicine">
                                     <div class="swiper-wrapper">
@@ -35,6 +31,7 @@
                                     <button class="btn btn-link" @click="this.editMedicineList">แก้ไขรายการยา</button>
                                 </div>
                             </div>
+                            <h4 class="mb-2 mt-5" v-else>ยังไม่ได้จ่ายยา <button class="btn btn-link" @click="this.editMedicineList">จ่ายยา</button></h4>
                             <div v-if="logdrops.length!=0">
                                 <h4 class="mb-2 mt-5"> ข้อมูลการหยอดตา</h4>
                                 <form>
@@ -68,15 +65,12 @@
                                                     <th class="text-white"></th>
                                                 </tr>
                                             </thead>
-                                            <!-- <tbody v-for=" logdrop in  this.logdrops" :key="logdrop.index">
-                                                <td >{{logdrop.date}}</td>
-							    	            <td >{{logdrop.time}}</td>
-                                                <td >{{logdrop.scheduleTime}}</td>
-                                                <td style="width: 100%">{{logdrop.mark}}</td>
-                                            </tbody> -->
                                         </table>
                                     </div>
                                 </form>
+                            </div>
+                            <div v-else>
+                                <h4 class="mb-2 mt-5">ยังไม่มีประวัติการหยอดตา</h4>
                             </div>
                         </div>
                     </div>
@@ -106,7 +100,6 @@ export default {
                 await this.getMedicineList(this.patientData.history, this.medicineList);
                 // this.logdrops = await this.getlogdropList()
                 this.logdrops = await getlogdroptimes(this.patientData.history, this.logdrops)
-                
             }
         }
         catch(err){
@@ -139,16 +132,8 @@ export default {
         logdrops(val){
             this.addLogDropRow(val)
         },
-        medicineList(val){
-            console.log(val)
-        }
     },
     methods: {
-        async getlogdropList () {
-            return new Promise((resolve, rejects) => {
-                return setTimeout(() => resolve(getlogdroptimes(this.patientData.history, this.logdrops)), 1000) ;
-            })
-        },
         addLogDropRow(val){
             // console.log(val)
             $('#logdropdata').DataTable()
@@ -166,7 +151,7 @@ export default {
             this.getLogdropOption(val);
             val.forEach(async element => {
                 var name = await getMedcineName(element.pid);
-                console.log(element)
+                // console.log(element)
                 table
                 .row.add( [ element.realdate, name, element.scheduleTime, element.time, element.mark, element.date] )
                 .draw()
@@ -182,7 +167,7 @@ export default {
                 logdrops.forEach(element => {
                 if(element.mark == "complete"){
                   this.notiCount+=1;
-                  console.log(this.notiCount)
+                //   console.log(this.notiCount)
                 }else if(element.mark == "complete (without notification)"){
                   this.withoutnotiCount+=1;
                 }else{
@@ -209,7 +194,7 @@ export default {
             });
         },
         editMedicineList(){
-			this.$router.push({ name: 'editMedicineList', params: {current: this.currentMedicine, old: this.oldMedicine , id:this.patientData.docID, isEdited:false, addedMedicine: []}})
+			this.$router.push({ name: 'editMedicineList', params: {current: this.currentMedicine, old: this.oldMedicine , id:this.patientData.docID, isEdited:false, addedMedicine: [], deletedMedicine: []}})
 		},
         async getMedicineList(history){
             try{

@@ -58,7 +58,7 @@
                         </div>
                     </div>
                     <footer class="modal-footer d-flex justify-content-center">
-                        <button class="add action" @click="addMedicine">เพิ่มยา</button>
+                        <button class="add action" @click.prevent="addMedicine">เพิ่มยา</button>
                     </footer>
                 </div>  
             </div>
@@ -70,19 +70,31 @@
 <script>
 import $ from 'jquery' ;
 import Swal from 'sweetalert2'
+import Select2 from 'vue3-select2-component'
 export default {
     name: "AddMedicineToList",
+    components: {
+      	Select2,
+    },
     created() {
-        this.medicines = this.$route.params.medicines;
-        this.currentMedicines = this.$route.params.currentMedicines;
-        this.addedMedicine = this.$route.params.addedMedicine;
-        this.deletedMedicine = this.$route.params.deletedMedicine;
-        this.userID = this.$route.params.id;
-        this.oldMedicines = this.$route.params.old; 
-        $("#medName").select2({
-            placeholder: "Select a state",
-            allowClear: true
-        });
+        try {
+            this.medicines = this.$route.params.medicines;
+            this.currentMedicines = this.$route.params.currentMedicines;
+            this.addedMedicine = this.$route.params.addedMedicine;
+            this.deletedMedicine = this.$route.params.deletedMedicine;
+            this.userID = this.$route.params.id;
+            this.oldMedicines = this.$route.params.old; 
+        } catch (error) {
+            Swal.fire({
+                      icon: 'error',
+                      title: 'มีปัญหาในการเพิ่มยา',
+                      text: error,
+                      })
+        }
+        // $("#medName").select2({
+        //     placeholder: "Select a state",
+        //     allowClear: true
+        // });
     },
     methods: {
         myChangeEvent(val){
@@ -139,7 +151,7 @@ export default {
                 this.currentMedicines.push(this.presription)
                 this.addedMedicine.push(this.presription)
                 this.isEdited = true
-                this.$router.push({ name: 'editMedicineList', params: {current: this.currentMedicines, old: this.oldMedicines, id:this.userID, isEdited: true,addedMedicine: this.addedMedicine}})
+                this.$router.push({ name: 'editMedicineList', params: {current: this.currentMedicines, old: this.oldMedicines, id:this.userID, isEdited: true,addedMedicine: this.addedMedicine, deletedMedicine: this.deletedMedicine}})
                 // console.log(this.presription)
             }catch(error){
                 // alert(error)

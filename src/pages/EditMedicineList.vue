@@ -15,12 +15,13 @@
                                             <span class="mx-2">วิธีการหยอด: {{medicine.eyeOption}}</span>
                                             <span class="mx-2">จำนวนการใช้: {{medicine.useOption}}</span>
                                             <div class="btn-group">
-                                                <button class="btn bg-danger text-white " @click="deleteMed(index,medicine)">ลบ</button>
+                                                <button class="btn bg-danger text-white " @click.prevent="deleteMed(index,medicine)">ลบ</button>
+                                                
                                             </div>
                                         </li>
                                         <div class="my-2 d-flex justify-content-center">
-                                            <button class="add action mx-2 " @click="addNewMedicine">เพิ่มยา</button>
-                                            <button class="btn bg-success text-white" @click="submitMedicineList" v-if="isEdited">บันทึกข้อมูล</button>
+                                            <button class="add action mx-2 " @click.prevent="addNewMedicine">เพิ่มยา</button>
+                                            <button class="btn bg-success text-white" @click.prevent="submitMedicineList" v-if="isEdited">บันทึกข้อมูล</button>
                                         </div>
                                         
                                     </ul>
@@ -45,22 +46,16 @@
 
 
 <script>
-
-// import { getlogdroptime, getPrescription, changeLocationToURL } from '../firebase.js'
 import Swal from 'sweetalert2'
 import { getMedicines, createPrescription, disableMedicine } from '../firebase.js'
-import Popup from '../components/Popup.vue'
-import $ from 'jquery' ;
 export default {
     name: "EditMedincineList",
-    components: {
-        Popup,
-    },
     created() {
         this.userID = this.$route.params.id;
         this.currentMedicines = this.$route.params.current;
         this.oldMedicines = this.$route.params.old;
         this.addedMedicine = this.$route.params.addedMedicine;
+        this.deletedMedicine = this.$route.params.deletedMedicine;
         this.isEdited = this.$route.params.isEdited;
     },    
     async mounted(){
@@ -95,7 +90,7 @@ export default {
             let text = "คุณแน่ใจไหมว่าต้องการลบยา " + medicine.medicineName + " ออกจากรายการยา " 
             Swal.fire({
               title: 'ลบ?',
-              text: "แน่ใจหรือไม่ว่าต้องการลบยานี้ออก?",
+              text: text,
               icon: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#d33',
