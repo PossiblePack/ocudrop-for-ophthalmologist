@@ -12,12 +12,6 @@
 2. ทำการติดตั้ง node.js ตามที่อยู่ในลิ้งค์นี้ก่อน (https://nodejs.org/en/)
 3. ใช้คำสั่ง `npm install` ในโฟลเดอร์ที่มีไฟล์  `package.json`
 4. ใช้คำสั่ง `npm run dev` ในการเปิด server สำหรับการพัฒนา
-
-  
-
-The repo uses [vue-cli](https://github.com/vuejs/vue-cli) scaffolding which takes care of the development setup with webpack and all the necessary modern tools to make web development faster and easier.
-
-
   
 ## ข้อมูลของ Template ที่ใช้
 [Light bootstrap dashboard](https://www.creative-tim.com/product/light-bootstrap-dashboard)
@@ -52,7 +46,7 @@ The repo uses [vue-cli](https://github.com/vuejs/vue-cli) scaffolding which take
 
 `npm run build`
 
-
+The repo uses [vue-cli](https://github.com/vuejs/vue-cli) scaffolding which takes care of the development setup with webpack and all the necessary modern tools to make web development faster and easier.
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
