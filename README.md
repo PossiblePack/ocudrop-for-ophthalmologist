@@ -8,8 +8,12 @@
 
 ## :rocket: การตั้งค่าและเชื่อมฐานข้อมูล    
 1. สร้างฐานข้อมูลใน firebase ตามโครงสร้าง ดังนี้
+![asd](https://user-images.githubusercontent.com/59278120/230725591-0e0346f6-8fdf-439e-83d6-23f46cc2ff58.png)
+![database-diagram](https://user-images.githubusercontent.com/59278120/230725230-34c4aba6-6099-4afa-9717-cb487af6c763.png)
 2. สร้างไฟล์ firebaseConfig.js ใน path  `/src/`
-3. นำ Database token ของ firebase ใส่ในไฟล์ ดังรูป
+![Untitled](https://user-images.githubusercontent.com/59278120/230725622-bf2bea33-9c03-47e3-82d4-85615fb0b28e.png)
+3. นำ Database token ของ firebase ใส่ในไฟล์ ดังรูป 
+![asdfasdfasdf](https://user-images.githubusercontent.com/59278120/230725699-d57719ad-79a6-463d-af27-bb74b7c99bd8.png)
 
 ## :rocket: วิธีการติดตั้ง Project
 1. Clone repo นี้ลงในเครื่อง
