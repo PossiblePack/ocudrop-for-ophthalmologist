@@ -1,57 +1,60 @@
-# [Vue Light Bootstrap Dashboard](http://vuejs.creative-tim.com/vue-light-bootstrap-dashboard) [![version][version-badge]][changelog] [![license][license-badge]][license]
 
-> Admin dashboard based on light bootstrap dashboard UI template + vue-router
+# Application for Ophthalmologist  โปรแกรมประยุกต์สำหรับจักษุแพทย์
 
-This project is a vue version of [Light bootstrap dashboard](https://www.creative-tim.com/product/light-bootstrap-dashboard)
-designed for vue js. The dashboard includes Bootstrap 4, vue-router, chartist, google-maps and several other plugins/components.
+  
 
-Check the [Live Demo here](http://vuejs.creative-tim.com/vue-light-bootstrap-dashboard).
+> เป็นโปรแกรมประยุกต์ที่ใช้สำหรับแพทย์ผู้เชี่ยวชาญโรคตาโดยใช้ Vue.js ในการสร้างเว็ปแอพพลิเคชันเพื่อใช้ในการจัดการข้อมูลยา ข้อมูลผู้ป่วย ลงทะเบียนผู้ป่วย รวมถึงจัดการรายการยาให้กับผู้ป่วย โดยได้นำเทมเพลต
+[Vue Light Bootstrap Dashboard](http://vuejs.creative-tim.com/vue-light-bootstrap-dashboard) [![version][version-badge]][changelog] [![license][license-badge]][license] มาใช้ในเป็นต้นแบบ
+    
 
-![](public/Dashboard.PNG)
+## :rocket: วิธีการติดตั้ง Project
+1. Clone repo นี้ลงในเครื่อง
+2. ทำการติดตั้ง node.js ตามที่อยู่ในลิ้งค์นี้ก่อน (https://nodejs.org/en/)
+3. ใช้คำสั่ง `npm install` ในโฟลเดอร์ที่มีไฟล์  `package.json`
+4. ใช้คำสั่ง `npm run dev` ในการเปิด server สำหรับการพัฒนา
 
-## :rocket: Getting started
-
-Vue Light Bootstrap Dashboard is built on top of Bootstrap 4, Vuejs and Vue-router. To get started do the following steps:
-
-1. Download the project
-2. Make sure you have node.js (https://nodejs.org/en/) installed
-3. Type `npm install` in the source folder where `package.json` is located
-4. Type `npm run dev` to start the development server
+  
 
 The repo uses [vue-cli](https://github.com/vuejs/vue-cli) scaffolding which takes care of the development setup with webpack and all the necessary modern tools to make web development faster and easier.
 
-## [Documentation](https://demos.creative-tim.com/vue-light-bootstrap-dashboard/documentation/#/buttons)
 
-## :cloud: Build Setup
+  
+## ข้อมูลของ Template ที่ใช้
+[Light bootstrap dashboard](https://www.creative-tim.com/product/light-bootstrap-dashboard)
 
-### install dependencies
+ออกแบบมาสำหรับการทำ Vue js แดชบอร์ด ประกอบด้วย Bootstrap 4, vue-router, chartist, google-maps และปลั๊กอิน/ส่วนประกอบอื่นๆ อีกมากมาย
+  
+
+[ดู live demo ได้ที่นี่](http://vuejs.creative-tim.com/vue-light-bootstrap-dashboard).
+### :cloud: คำสั่งที่ใช้ได้
+
+  
+
+#### ติดตั้ง dependencies
+
+  
 
 `npm install`
 
-### serve with hot reload at localhost:8000
+  
+
+#### serve ด้วย hot reload at localhost:8000
+
+  
 
 `npm run dev`
 
-### build for production with minification
+  
+
+#### build โปรเจกต์
+
+  
 
 `npm run build`
 
-### run unit tests
 
-`npm run unit`
-
-### run and watch unit tests
-
-`npm run unit:watch`
-
-## :clipboard: Contribution guide
-
-- `npm install` or `yarn install`
-- Please don't use jQuery or jQuery based plugins since there are many pure Vue alternatives
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
-[changelog]: ./CHANGELOG.md
-[license]: ./LICENSE.md
-[version-badge]: https://img.shields.io/badge/version-2.1.0-blue.svg
-[license-badge]: https://img.shields.io/badge/license-MIT-blue.svg
+
+
